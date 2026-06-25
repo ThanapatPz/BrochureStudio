@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brochure Studio — Checking Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F5F2;--ink:#1C1B19;--ink-soft:#5C5A55;--line:#E8E6E1;--card:#FFFFFF;
+  --red:#E2231A;--red-soft:#FDEAE9;--red-tint:rgba(226,35,26,0.04);
+  --amber:#B8740A;--amber-soft:#FBF1DC;--amber-tint:rgba(184,116,10,0.05);
+  --green:#1E7A4C;--green-soft:#E6F4ED;--green-tint:rgba(30,122,76,0.05);
+  --slate:#8B8A86;--slate-soft:#EFEEEA;
+  --blue:#2563A8;--blue-soft:#E8F1FA;
+  --purple:#6D28D9;--purple-soft:#EDE9FE;
+  --teal:#0D7373;--teal-soft:#CCEFEF;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+.th{font-family:'Noto Sans Thai','Plus Jakarta Sans',sans-serif;}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;}
+
+/* ── TOP BAR ── */
+.topbar{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--line);
+  padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:10px;}
+.logo{background:var(--red);color:#fff;font-weight:800;font-size:14px;padding:7px 11px;border-radius:7px;letter-spacing:-.3px;}
+.brand-text h1{font-size:14px;font-weight:800;}
+.brand-text .sub{font-size:10.5px;color:var(--ink-soft);}
+.mode-tabs{display:flex;gap:3px;background:var(--slate-soft);padding:3px;border-radius:9px;}
+.mode-tabs .tab{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;color:var(--slate);cursor:not-allowed;white-space:nowrap;}
+.mode-tabs .tab.active{background:var(--ink);color:#fff;}
+.role-seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;}
+.role-seg button{border:none;background:#fff;padding:5px 12px;font-family:inherit;font-weight:600;font-size:11.5px;color:var(--ink-soft);cursor:pointer;transition:background .15s;}
+.role-seg button.active{background:var(--ink);color:#fff;}
+
+/* ── FLOW BAR ── */
+.flow-bar{background:#FAFAF8;border-bottom:1px solid var(--line);padding:10px 24px;overflow-x:auto;}
+.flow-steps{display:flex;align-items:center;gap:0;min-width:max-content;}
+.fstep{display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:9px;cursor:pointer;transition:background .15s;}
+.fstep.active{background:var(--ink);color:#fff;}
+.fstep.done{background:var(--green-soft);color:var(--green);}
+.fstep.locked{opacity:0.38;cursor:not-allowed;}
+.fstep .fnum{width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.1);flex-shrink:0;}
+.fstep.active .fnum{background:rgba(255,255,255,0.25);}
+.fstep.done .fnum{background:var(--green);color:#fff;}
+.fstep .flabel{font-size:11.5px;font-weight:700;white-space:nowrap;}
+.fstep .fmeta{font-size:9.5px;opacity:0.7;white-space:nowrap;}
+.farrow{color:var(--line);font-size:16px;padding:0 2px;flex-shrink:0;}
+
+/* ── BANNER ── */
+.banner{margin:12px 24px 0;padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.banner.info{background:var(--blue-soft);color:var(--blue);}
+.banner.warn{background:var(--amber-soft);color:var(--amber);}
+.banner.success{background:var(--green-soft);color:var(--green);}
+.banner.hidden{display:none;}
+
+main{padding:14px 24px 110px;}
+
+/* ── AI CARD ── */
+.ai-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 26px;}
+.ai-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.ai-icon{font-size:30px;}
+.ai-header h2{font-size:16px;font-weight:800;}
+.ai-header p{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+.upload-zone{border:2px dashed var(--line);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;}
+.upload-zone:hover{border-color:var(--ink);}
+.upload-zone .upload-icon{font-size:32px;margin-bottom:8px;}
+.upload-zone p{font-size:12.5px;color:var(--ink-soft);}
+.summary-boxes{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:8px;}
+.sum-box{background:#FAFAF8;border:1px solid var(--line);border-radius:9px;padding:12px 14px;}
+.sum-box .sv{font-size:21px;font-weight:800;}
+.sum-box .sv.red{color:var(--red);}
+.sum-box .sv.amber{color:var(--amber);}
+.sum-box .sv.green{color:var(--green);}
+.sum-box .sl{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+.progress-bar-wrap{background:var(--slate-soft);border-radius:999px;height:7px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--green),#34d399);transition:width .4s ease;}
+.progress-steps{display:flex;flex-direction:column;gap:7px;margin-top:10px;}
+.progress-step{display:flex;align-items:center;gap:9px;font-size:12px;}
+.ps-icon{font-size:13px;width:18px;text-align:center;}
+.ps-label{flex:1;}
+.ps-status{font-size:10.5px;font-weight:700;color:var(--slate);}
+.ps-status.done{color:var(--green);}
+.ps-status.running{color:var(--amber);}
+
+/* ══ SPLIT PANE ══ */
+.split-pane{display:flex;gap:12px;height:calc(100vh - 230px);min-height:500px;}
+.split-pane.collapsed-design .design-panel{display:none;}
+.split-pane.collapsed-design .right-panel{flex:1;}
+.design-panel{flex:0 0 38%;min-width:280px;display:flex;flex-direction:column;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.design-panel-header{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;
+  border-bottom:1px solid var(--line);background:#F9F8F6;flex-shrink:0;}
+.design-panel-header .dph-title{font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.design-panel-header .dph-meta{font-size:10.5px;color:var(--ink-soft);}
+.design-panel-header .dph-actions{display:flex;gap:5px;}
+.dph-btn{border:1px solid var(--line);background:#fff;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink-soft);}
+.dph-btn:hover{border-color:var(--ink);color:var(--ink);}
+.design-scroll{flex:1;overflow-y:auto;overflow-x:auto;padding:14px;}
+.brochure-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px;background:#1a1a1a;}
+.brochure-cell{background:#fff;padding:9px 7px;min-height:100px;position:relative;cursor:pointer;transition:outline .1s;}
+.brochure-cell:hover{outline:2px solid var(--blue);}
+.brochure-cell.highlighted{outline:3px solid var(--amber);z-index:2;}
+.brochure-cell.highlighted-green{outline:3px solid var(--green);z-index:2;}
+.bc-img{width:100%;height:48px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:5px;}
+.bc-name{font-size:8.5px;font-weight:700;line-height:1.2;color:#1C1B19;}
+.bc-price{font-size:12px;font-weight:800;color:var(--red);margin-top:3px;}
+.bc-orig{font-size:8.5px;color:#8B8A86;text-decoration:line-through;}
+.bc-badge{position:absolute;top:4px;right:4px;font-size:7.5px;font-weight:700;padding:2px 4px;border-radius:3px;}
+.bc-badge.sale{background:#FDEAE9;color:var(--red);}
+.bc-badge.bogo{background:#E8F1FA;color:var(--blue);}
+.mismatch-pin{position:absolute;top:3px;left:3px;width:15px;height:15px;border-radius:50%;
+  background:var(--amber);color:#fff;font-size:7.5px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.mismatch-pin.resolved{background:var(--green);}
+
+/* ══ RIGHT PANEL ══ */
+.right-panel{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.subtab-bar{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--line);background:#F9F8F6;flex-shrink:0;}
+.subtab{flex:1;padding:10px 8px;font-size:11.5px;font-weight:700;color:var(--slate);cursor:pointer;
+  border:none;background:transparent;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;
+  border-bottom:2px solid transparent;transition:all .15s;position:relative;white-space:nowrap;}
+.subtab:not(:last-child){border-right:1px solid var(--line);}
+.subtab.active{color:var(--ink);background:var(--card);border-bottom:2px solid var(--ink);}
+.subtab:hover:not(.active){background:#F0EFEB;color:var(--ink-soft);}
+.subtab .stab-badge{font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:999px;background:var(--red-soft);color:var(--red);}
+.subtab .stab-badge.ok{background:var(--green-soft);color:var(--green);}
+.subtab .stab-badge.warn{background:var(--amber-soft);color:var(--amber);}
+.subtab .stab-badge.purple{background:var(--purple-soft);color:var(--purple);}
+.subtab .stab-badge.amber{background:var(--amber-soft);color:var(--amber);}
+.subtab-content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── TAB 1: REVIEW TABLE ── */
+.report-toolbar{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);flex-shrink:0;background:#FAFAF8;}
+.report-toolbar input{flex:1;min-width:100px;padding:5px 9px;border-radius:7px;border:1px solid var(--line);font-family:inherit;font-size:11.5px;background:#fff;}
+.chips{display:flex;gap:4px;flex-wrap:wrap;}
+.chip{border:1px solid var(--line);background:#fff;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.progress-strip{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid var(--line);flex-shrink:0;background:#fff;}
+.prog-bar{flex:1;height:5px;background:var(--slate-soft);border-radius:999px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--green);border-radius:999px;transition:width .3s ease;}
+.table-scroll{flex:1;overflow:auto;background:var(--card);}
+table{width:100%;border-collapse:collapse;}
+thead th{position:sticky;top:0;background:#F3F2EF;text-align:left;font-size:9px;text-transform:uppercase;
+  letter-spacing:0.5px;color:var(--ink-soft);padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:5;}
+tbody td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:11.5px;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr{cursor:pointer;transition:background .1s;}
+tbody tr:hover td{background:rgba(0,0,0,0.016);}
+tbody tr.row-edited td{background:var(--green-tint);}
+tbody tr.row-noted td{background:var(--amber-tint);}
+tbody tr.row-incomplete td{background:var(--red-tint);}
+tbody tr.row-selected td{background:var(--blue-soft) !important;}
+.thumb-sm{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.pname{font-weight:700;font-size:11px;line-height:1.3;}
+.pname-th{font-size:9.5px;color:var(--ink-soft);}
+.mismatch-type{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;white-space:nowrap;}
+.mismatch-type.price{background:var(--red-soft);color:var(--red);}
+.mismatch-type.desc{background:var(--amber-soft);color:var(--amber);}
+.mismatch-type.promo{background:var(--blue-soft);color:var(--blue);}
+.mismatch-type.image{background:#F3E8FF;color:#7C3AED;}
+.mismatch-type.manual{background:var(--teal-soft);color:var(--teal);}
+.val-sos{color:var(--green);font-weight:700;font-size:10.5px;}
+.val-draft{color:var(--red);font-size:10.5px;}
+.rstatus{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:4px;white-space:nowrap;}
+.rstatus.edited{background:var(--green-soft);color:var(--green);}
+.rstatus.noted{background:var(--amber-soft);color:var(--amber);}
+.rstatus.incomplete{background:var(--red-soft);color:var(--red);}
+.rstatus.cr{background:var(--purple-soft);color:var(--purple);}
+.rstatus.approved{background:var(--teal-soft);color:var(--teal);}
+.rstatus.pending{background:var(--slate-soft);color:var(--slate);}
+
+/* Buyer toggle */
+.buyer-toggle{display:flex;gap:4px;}
+.bt-btn{border:1px solid var(--line);background:#fff;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--slate);transition:all .1s;}
+.bt-btn:hover{border-color:var(--ink-soft);}
+.bt-btn.yes.active{background:var(--green);color:#fff;border-color:var(--green);}
+.bt-btn.no.active{background:var(--slate);color:#fff;border-color:var(--slate);}
+
+/* ── INLINE CR ROW ── */
+.cr-inline-row td{background:var(--purple-soft) !important;padding:0 !important;border-bottom:2px solid var(--purple) !important;}
+.cr-inline-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:9px;}
+.cr-inline-context{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#fff;border-radius:7px;border:1px solid rgba(109,40,217,0.15);font-size:11px;}
+.cr-ctx-arrow{color:var(--purple);font-size:13px;flex-shrink:0;}
+.cr-ctx-val{font-weight:700;}
+.cr-ctx-val.sos{color:var(--green);}
+.cr-ctx-val.draft{color:var(--red);}
+.cr-type-label{font-size:10px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.4px;}
+.cr-type-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.cr-type-chip{border:1.5px solid rgba(109,40,217,0.25);background:#fff;padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--purple);cursor:pointer;white-space:nowrap;transition:all .12s;}
+.cr-type-chip:hover{border-color:var(--purple);background:rgba(109,40,217,0.06);}
+.cr-type-chip.selected{background:var(--purple);color:#fff;border-color:var(--purple);}
+.cr-note-wrap{display:flex;flex-direction:column;gap:3px;}
+.cr-note-label{font-size:10px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.4px;}
+.cr-note-input{width:100%;padding:7px 9px;border:1.5px solid rgba(109,40,217,0.25);border-radius:7px;font-family:inherit;font-size:11.5px;background:#fff;color:var(--ink);resize:none;}
+.cr-note-input:focus{outline:none;border-color:var(--purple);}
+.cr-note-chars{font-size:9.5px;color:var(--slate);text-align:right;}
+.cr-inline-actions{display:flex;align-items:center;gap:7px;}
+.cr-save-btn{background:var(--purple);color:#fff;border:none;padding:7px 16px;border-radius:7px;font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;}
+.cr-save-btn:disabled{opacity:.35;cursor:not-allowed;}
+.cr-cancel-btn{background:none;border:1.5px solid rgba(109,40,217,0.25);padding:7px 12px;border-radius:7px;font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;color:var(--purple);}
+.cr-saved-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:5px;background:var(--purple);color:#fff;}
+.cr-edit-link{background:none;border:none;font-size:10.5px;font-weight:700;color:var(--purple);cursor:pointer;font-family:inherit;text-decoration:underline;padding:0;}
+
+/* ══ TAB 2: ADD CR (Buyer manual CR) ══ */
+.add-cr-panel{flex:1;overflow-y:auto;padding:16px;}
+.add-cr-hero{background:linear-gradient(135deg,#F5F0FF 0%,#EDE9FE 100%);border:1.5px solid rgba(109,40,217,0.2);border-radius:12px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px;}
+.add-cr-hero-icon{font-size:28px;flex-shrink:0;}
+.add-cr-hero h3{font-size:13px;font-weight:800;color:var(--purple);}
+.add-cr-hero p{font-size:11.5px;color:var(--ink-soft);margin-top:3px;line-height:1.5;}
+
+/* Form fields */
+.form-section{background:#FAFAF8;border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:12px;}
+.form-section-label{font-size:10px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+.form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:11px;}
+.form-row:last-child{margin-bottom:0;}
+.form-label{font-size:11px;font-weight:700;color:var(--ink);}
+.form-label span.req{color:var(--red);}
+.form-hint{font-size:10.5px;color:var(--slate);margin-top:2px;}
+
+/* Styled select */
+.styled-select{width:100%;padding:8px 11px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:12px;font-weight:600;color:var(--ink);background:#fff;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B8A86' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.styled-select:focus{outline:none;border-color:var(--purple);}
+.styled-select.selected{border-color:var(--purple);background-color:#FAFAFE;}
+
+/* Dynamic input area — shown based on case type */
+.dynamic-field{background:#fff;border:1.5px solid rgba(109,40,217,0.2);border-radius:9px;padding:12px 14px;margin-top:8px;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.dynamic-field .df-label{font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+
+/* Price change: two side-by-side inputs */
+.price-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.price-input-wrap{position:relative;}
+.price-input-wrap .currency-prefix{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--ink-soft);}
+.price-input{width:100%;padding:7px 9px 7px 26px;border:1.5px solid var(--line);border-radius:7px;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink);background:#fff;}
+.price-input:focus{outline:none;border-color:var(--purple);}
+.field-sublabel{font-size:10px;color:var(--slate);margin-top:3px;text-align:center;}
+
+/* Description change: before/after textareas */
+.desc-pair{display:flex;flex-direction:column;gap:8px;}
+.desc-input{width:100%;padding:7px 9px;border:1.5px solid var(--line);border-radius:7px;font-family:inherit;font-size:11.5px;color:var(--ink);background:#fff;resize:vertical;min-height:52px;}
+.desc-input:focus{outline:none;border-color:var(--purple);}
+
+/* Promo change: badge picker */
+.badge-picker{display:flex;gap:6px;flex-wrap:wrap;}
+.badge-option{border:1.5px solid var(--line);background:#fff;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink-soft);transition:all .12s;}
+.badge-option:hover{border-color:var(--purple);}
+.badge-option.selected{border-color:var(--purple);background:var(--purple-soft);color:var(--purple);}
+.badge-option .badge-tag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:4px;}
+.badge-option .badge-tag.red{background:var(--red-soft);color:var(--red);}
+.badge-option .badge-tag.blue{background:var(--blue-soft);color:var(--blue);}
+.badge-option .badge-tag.amber{background:var(--amber-soft);color:var(--amber);}
+
+/* Image change: upload placeholder + note */
+.image-upload-placeholder{border:2px dashed rgba(109,40,217,0.25);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:8px;}
+.image-upload-placeholder:hover{border-color:var(--purple);}
+.image-upload-placeholder .iup-icon{font-size:24px;margin-bottom:5px;}
+.image-upload-placeholder p{font-size:11.5px;color:var(--ink-soft);}
+
+/* Pack size: simple text + unit */
+.pack-row{display:flex;gap:6px;align-items:stretch;}
+.pack-qty{flex:2;padding:7px 9px;border:1.5px solid var(--line);border-radius:7px;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink);background:#fff;}
+.pack-qty:focus{outline:none;border-color:var(--purple);}
+.pack-unit{flex:1;padding:7px 9px;border:1.5px solid var(--line);border-radius:7px;font-family:inherit;font-size:12px;font-weight:600;color:var(--ink);background:#fff;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238B8A86' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:22px;}
+.pack-unit:focus{outline:none;border-color:var(--purple);}
+
+/* Submit button area */
+.add-cr-submit-area{border-top:1px solid var(--line);padding:12px 16px;background:#FAFAF8;flex-shrink:0;display:flex;align-items:center;gap:10px;}
+.add-cr-submit-btn{background:var(--purple);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.add-cr-submit-btn:disabled{opacity:.35;cursor:not-allowed;}
+.add-cr-saved-list{flex:1;font-size:11px;color:var(--purple);font-weight:700;}
+
+/* Manual CR badge in table */
+.manual-cr-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--teal-soft);color:var(--teal);}
+
+/* ── TAB 3: CR SUMMARY ── */
+.cr-summary-panel{flex:1;overflow-y:auto;padding:12px;}
+.summary-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.sstat{border-radius:8px;padding:10px 12px;text-align:center;}
+.sstat.green{background:var(--green-soft);}
+.sstat.purple{background:var(--purple-soft);}
+.sstat.slate{background:var(--slate-soft);}
+.sstat .snum{font-size:20px;font-weight:800;}
+.sstat.green .snum{color:var(--green);}
+.sstat.purple .snum{color:var(--purple);}
+.sstat.slate .snum{color:var(--slate);}
+.sstat .slabel{font-size:10px;color:var(--ink-soft);margin-top:1px;}
+.summary-item{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:8px;margin-bottom:6px;border:1px solid var(--line);background:#FAFAF8;}
+.summary-item.has-cr{border-color:var(--purple);background:var(--purple-soft);}
+.summary-item.has-manual-cr{border-color:var(--teal);background:var(--teal-soft);}
+.summary-item.no-cr{border-color:var(--green);background:var(--green-soft);}
+.summary-item .si-thumb{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.summary-item .si-content{flex:1;min-width:0;}
+.summary-item .si-name{font-size:11px;font-weight:700;}
+.summary-item .si-cr{font-size:10.5px;color:var(--purple);margin-top:2px;line-height:1.4;}
+.summary-item .si-ok{font-size:10.5px;color:var(--green);margin-top:2px;}
+.si-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;}
+.si-badge.cr{background:var(--purple);color:#fff;}
+.si-badge.manual{background:var(--teal);color:#fff;}
+.si-badge.ok{background:var(--green);color:#fff;}
+.send-cr-area{padding:12px;border-top:1px solid var(--line);flex-shrink:0;background:#FAFAF8;}
+.send-note-input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:11.5px;background:#fff;margin-bottom:8px;resize:none;}
+.send-note-input:focus{outline:none;border-color:var(--purple);}
+.send-btn-row{display:flex;align-items:center;gap:9px;}
+
+/* ── APPROVE / SEND CARD ── */
+.approve-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+.approve-card h2{font-size:15px;font-weight:800;margin-bottom:14px;}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:18px;}
+.scard{border-radius:9px;padding:12px 14px;}
+.scard.green{background:var(--green-soft);color:var(--green);}
+.scard.amber{background:var(--amber-soft);color:var(--amber);}
+.scard.slate{background:var(--slate-soft);color:var(--slate);}
+.scard.teal{background:var(--teal-soft);color:var(--teal);}
+.scard .snum{font-size:22px;font-weight:800;}
+.scard .slabel{font-size:11px;margin-top:2px;}
+.notify-targets{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.notif-card{flex:1;min-width:170px;border:1px solid var(--line);border-radius:9px;padding:13px;background:#FAFAF8;}
+.notif-card .nc-title{font-size:12px;font-weight:700;margin-bottom:5px;}
+.notif-card .nc-detail{font-size:11px;color:var(--ink-soft);line-height:1.5;}
+.notif-card .nc-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-top:7px;}
+.notif-card.ae .nc-badge{background:var(--blue-soft);color:var(--blue);}
+
+/* ── BUYER APPROVAL STEP ── */
+.buyer-approval-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+.buyer-approval-wrap h2{font-size:15px;font-weight:800;margin-bottom:6px;}
+.approval-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:9px;background:#FAFAF8;border:1px solid var(--line);margin-bottom:8px;}
+.appr-thumb{width:32px;height:32px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.appr-name{flex:1;font-size:12px;font-weight:700;}
+.appr-prev-cr{font-size:10.5px;color:var(--purple);margin-top:1px;}
+.appr-action{display:flex;gap:5px;}
+.appr-btn{border:none;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.appr-btn.ok{background:var(--green-soft);color:var(--green);}
+.appr-btn.ok.active{background:var(--green);color:#fff;}
+.appr-btn.reject{background:var(--red-soft);color:var(--red);}
+.appr-btn.reject.active{background:var(--red);color:#fff;}
+
+/* ── DRAFT 2 ── */
+.draft2-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+.draft2-card h2{font-size:15px;font-weight:800;margin-bottom:6px;}
+.cr-item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border-radius:9px;background:#FAFAF8;border:1px solid var(--line);margin-bottom:6px;}
+.cr-item .ci-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.cr-item .ci-badge.has-cr{background:var(--purple-soft);color:var(--purple);}
+.cr-item .ci-badge.manual-cr{background:var(--teal-soft);color:var(--teal);}
+.cr-item .ci-badge.no-cr{background:var(--green-soft);color:var(--green);}
+.cr-item .ci-content{flex:1;}
+.cr-item .ci-name{font-size:12px;font-weight:700;}
+.cr-item .ci-cr{font-size:11px;color:var(--purple);margin-top:3px;}
+.cr-item .ci-cr.teal{color:var(--teal);}
+
+/* ── PIPELINE ── */
+.pipeline-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 26px;}
+.pipeline-card h2{font-size:15px;font-weight:800;margin-bottom:18px;}
+.pipe-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);}
+.pipe-item:last-child{border-bottom:none;}
+.pipe-left{display:flex;flex-direction:column;align-items:center;width:30px;flex-shrink:0;}
+.pipe-num{width:30px;height:30px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pipe-num.done{background:var(--green);color:#fff;}
+.pipe-num.active{background:var(--ink);color:#fff;}
+.pipe-num.pending{background:var(--slate-soft);color:var(--slate);}
+.pipe-line{flex:1;width:2px;background:var(--line);margin:4px 0;}
+.pipe-content .ptitle{font-weight:700;font-size:13px;}
+.pipe-content .pmeta{font-size:11.5px;color:var(--ink-soft);margin-top:3px;line-height:1.5;}
+.pstatus{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-top:5px;}
+.pstatus.done{background:var(--green-soft);color:var(--green);}
+.pstatus.active{background:var(--blue-soft);color:var(--blue);}
+.pstatus.pending{background:var(--slate-soft);color:var(--slate);}
+
+/* ── BUTTONS ── */
+.btn-primary{background:var(--ink);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.btn-secondary{background:var(--slate-soft);color:var(--ink);border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.btn-send{background:var(--red);color:#fff;border:none;padding:11px 22px;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.btn-purple{background:var(--purple);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.btn-teal{background:var(--teal);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+
+/* ── FOOTER ── */
+.footer-bar{position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--card);border-top:1px solid var(--line);
+  padding:11px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 -4px 14px rgba(0,0,0,0.04);}
+.footer-stats{font-size:12px;color:var(--ink-soft);}
+.footer-stats b{color:var(--ink);}
+.footer-stats .ok{color:var(--green);font-weight:700;}
+.footer-stats .warn{color:var(--amber);font-weight:700;}
+.footer-stats .err{color:var(--red);font-weight:700;}
+.spacer{flex:1;}
+
+/* ── STEP LABEL BADGE ── */
+.step-label-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;margin-bottom:14px;}
+.step-label-badge.art{background:#F0EDE8;color:var(--ink);}
+.step-label-badge.buyer{background:var(--amber-soft);color:var(--amber);}
+.step-label-badge.ae{background:var(--blue-soft);color:var(--blue);}
+.step-label-badge.ai{background:var(--green-soft);color:var(--green);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">Tops</div>
+    <div class="brand-text"><h1>Brochure Studio</h1><div class="sub">WW 2625/26 · Tops Fine Food</div></div>
+  </div>
+  <div class="mode-tabs">
+    <div class="tab">Edit Mode</div>
+    <div class="tab active">Checking Mode</div>
+    <div class="tab">Quota Mode</div>
+    <div class="tab">Ad Name Mode</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-soft);">
+    Viewing as
+    <div class="role-seg" id="roleSeg">
+      <button data-role="art" class="active">🎨 Art</button>
+      <button data-role="ae">📋 AE</button>
+      <button data-role="buyer">🛒 Buyer</button>
+    </div>
+  </div>
+</header>
+
+<div class="flow-bar"><div class="flow-steps" id="flowSteps"></div></div>
+<div class="banner hidden" id="mainBanner"></div>
+<main id="mainContent"></main>
+<div class="footer-bar" id="footerBar"></div>
+
+<script>
+const EMOJI_BG=['#FCEFE3','#E9F4EC','#FDEAEA','#EAF1FA','#F6F1E3','#F0EAF7'];
+const TYPE_LABEL={price:'Price',desc:'Description',promo:'Promo Type',image:'Image',manual:'Manual CR'};
+
+const mismatches=[
+  {id:1,barcode:'8853474073481',en:'Bakery Arigato Ham Cheese',th:'แซนด์วิชแฮมชีส 85 กรัม',emoji:'🥪',
+   type:'price',sosVal:'฿27',draftVal:'฿30',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+  {id:2,barcode:'8858781400265',en:'Just Smoked Salmon Gravlax',th:'แซลมอนรมควัน 80 กรัม',emoji:'🐟',
+   type:'price',sosVal:'฿175 / Save ฿20',draftVal:'฿185 / Save ฿10',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+  {id:3,barcode:'0000048601559',en:'Mixed Donburi / Pack',th:'ข้าวหน้าหมูรวม / แพค',emoji:'🍱',
+   type:'desc',sosVal:'Mixed Donburi (4 pcs)',draftVal:'Mixed Donburi / Pack',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+  {id:4,barcode:'8858781400272',en:'Smoked Salmon Black Pepper',th:'แซลมอนพริกไทยดำ 80 กรัม',emoji:'🐟',
+   type:'price',sosVal:'฿155 / Save ฿40',draftVal:'฿175 / Save ฿20',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+  {id:5,barcode:'9414832131022',en:'Tasty Crackers 120g.',th:'แทสตี้ แครกเกอร์ 120 กรัม',emoji:'🍘',
+   type:'desc',sosVal:'120g.',draftVal:'100g.',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+  {id:6,barcode:'0218317000086',en:'Okra / pack',th:'กระเจี๊ยบเขียว / แพค',emoji:'🫛',
+   type:'promo',sosVal:'TOPS SALE',draftVal:'Red Hot',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+  {id:7,barcode:'0000020643966',en:'Shiitake Mushroom / pack',th:'เห็ดหอมสด / แพค',emoji:'🍄',
+   type:'image',sosVal:'Pack photo required',draftVal:'Single mushroom shown',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+  {id:8,barcode:'4006067084225',en:'Davidoff Classic Cigarettes',th:'ดาวิดอฟ คลาสสิค',emoji:'🚬',
+   type:'price',sosVal:'฿145',draftVal:'฿140',
+   buyerWantsEdit:null,cr:{type:'',fields:{}},crAdded:false,buyerApproved:null,isManual:false},
+];
+
+const allProducts=[
+  {id:'x1',en:'Broccoli / kg.',th:'บรอกโคลี่',emoji:'🥦',price:'฿79',orig:'฿99',badge:'sale',mismatch:null},
+  ...mismatches.map(m=>({id:m.id,en:m.en,th:m.th,emoji:m.emoji,
+    price:m.draftVal.split('/')[0].trim(),orig:'',badge:m.type==='promo'?'bogo':'sale',mismatch:m.id})),
+  {id:'x2',en:'Chicken Cheese Bun',th:'ชิกเด้นชีสบัน',emoji:'🍗',price:'฿40',orig:'',badge:'bogo',mismatch:null},
+  {id:'x3',en:'Fresh Salmon Fillet',th:'แซลมอนสด',emoji:'🐟',price:'฿299',orig:'฿350',badge:'sale',mismatch:null},
+  {id:'x4',en:'Garlic / pack',th:'กระเทียม / แพค',emoji:'🧄',price:'฿25',orig:'฿35',badge:'sale',mismatch:null},
+];
+
+// Add CR form state (separate from per-mismatch CR)
+const newCR={
+  productId:'',
+  caseType:'',       // the dropdown value
+  fields:{},         // dynamic fields per case type
+};
+
+// Case type definitions: each has a label, icon, hint, and field schema
+const CR_CASES={
+  price:{
+    label:'💰 Price Change',
+    hint:'Correct the selling price or savings shown in the brochure.',
+    fields:[
+      {key:'currentPrice',label:'Current (wrong) price in draft',type:'price',placeholder:'0.00'},
+      {key:'correctPrice',label:'Correct price (SOS reference)',type:'price',placeholder:'0.00'},
+      {key:'savings',label:'Savings label (optional)',type:'text',placeholder:'e.g. Save ฿20 / Buy 2 Get 1'},
+    ]
+  },
+  desc:{
+    label:'📝 Product Name / Description',
+    hint:'Fix a wrong name, pack size label, origin, or product description.',
+    fields:[
+      {key:'currentText',label:'Current text in draft',type:'textarea',placeholder:'What it currently says…'},
+      {key:'correctText',label:'Correct text',type:'textarea',placeholder:'What it should say…'},
+    ]
+  },
+  promo:{
+    label:'🏷️ Promo Type / Badge',
+    hint:'Change the promotion mechanic badge shown on the product.',
+    fields:[
+      {key:'correctBadge',label:'Select correct promo badge',type:'badge'},
+      {key:'note',label:'Extra detail (optional)',type:'text',placeholder:'e.g. period: 1–7 Jul only'},
+    ]
+  },
+  image:{
+    label:'🖼️ Product Image / Photo',
+    hint:'Request a different or corrected product photo.',
+    fields:[
+      {key:'imageNote',label:'Describe the correct image',type:'textarea',placeholder:'e.g. Use pack shot showing all 4 pieces, white background…'},
+    ]
+  },
+  packsize:{
+    label:'📦 Pack Size / Weight',
+    hint:'Correct the pack size, quantity, or net weight displayed.',
+    fields:[
+      {key:'correctQty',label:'Correct quantity / size',type:'packsize'},
+      {key:'note',label:'Additional note (optional)',type:'text',placeholder:'e.g. label shows 120g but SOS says 100g'},
+    ]
+  },
+  other:{
+    label:'✏️ Other Correction',
+    hint:'Anything not covered above — describe the change needed.',
+    fields:[
+      {key:'note',label:'Describe the correction needed',type:'textarea',placeholder:'Explain clearly what needs to change and why…'},
+    ]
+  },
+};
+
+const BADGE_OPTIONS=[
+  {value:'tops_sale',label:'TOPS SALE',tag:'red'},
+  {value:'red_hot',label:'Red Hot',tag:'red'},
+  {value:'bogo',label:'Buy 1 Get 1',tag:'blue'},
+  {value:'buy2',label:'Buy 2 Save',tag:'amber'},
+  {value:'member_price',label:'Member Price',tag:'blue'},
+  {value:'everyday',label:'Everyday Price',tag:'amber'},
+];
+
+const S={
+  role:'art',step:1,
+  aiDone:false,
+  artNoticeSent:false,
+  buyerCRSubmitted:false,
+  draft2Uploaded:false,
+  buyerApproved:false,
+  draft2ReviewDone:false,
+  excomDone:false,
+  artFinalDone:false,
+  filter:'all',search:'',
+  showDesign:true,selectedMismatch:null,zoomLevel:1,
+  activeSubtab:1, // 1=Review, 2=Add CR, 3=CR Summary
+  openCRInline:null,
+  sendNote:'',
+};
+
+function esc(s){return(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function buyerStatus(m){
+  if(m.buyerWantsEdit===null)return'pending';
+  if(m.buyerWantsEdit===false)return'accepted';
+  return m.crAdded?'cr_added':'needs_cr';
+}
+function statusBadgeHTML(m){
+  const s=buyerStatus(m);
+  if(s==='pending')return'<span class="rstatus pending">⏳ Pending</span>';
+  if(s==='accepted')return'<span class="rstatus edited">No Edit</span>';
+  if(s==='needs_cr')return'<span class="rstatus noted">✏️ Wants edit</span>';
+  return'<span class="rstatus cr">📤 CR saved</span>';
+}
+function rowClassFor(m){
+  const s=buyerStatus(m);
+  if(s==='pending')return'row-incomplete';
+  if(s==='needs_cr')return'row-noted';
+  return'row-edited';
+}
+function pendingCount(){return mismatches.filter(m=>buyerStatus(m)==='pending').length;}
+function acceptedCount(){return mismatches.filter(m=>buyerStatus(m)==='accepted').length;}
+function needsCrCount(){return mismatches.filter(m=>buyerStatus(m)==='needs_cr').length;}
+function crAddedCount(){return mismatches.filter(m=>m.crAdded).length;}
+function manualCRCount(){return mismatches.filter(m=>m.isManual&&m.crAdded).length;}
+function buyerDecisionComplete(){
+  return mismatches.every(m=>m.buyerWantsEdit!==null&&(m.buyerWantsEdit===false||m.crAdded));
+}
+
+const STEPS=[
+  {n:1,label:'Upload & AI Check',meta:'Draft 1 vs SOS'},
+  {n:2,label:'Mismatch Report',meta:'Buyer decides, Art views'},
+  {n:3,label:'Art Approval',meta:'Notify AE & receive CR'},
+  {n:4,label:'Draft 2',meta:'Art edits & uploads'},
+  {n:5,label:'Buyer Approval',meta:'Check draft 2, no edit'},
+  {n:6,label:'Final Pipeline',meta:'Art finalizes → Production'},
+];
+
+function canGoStep(n){
+  if(n===2&&!S.aiDone)return false;
+  if(n>=3&&!buyerDecisionComplete())return false;
+  if(n>=4&&!S.artNoticeSent)return false;
+  if(n>=5&&!S.draft2Uploaded)return false;
+  if(n===6&&!S.draft2ReviewDone)return false;
+  return true;
+}
+
+function renderStepper(){
+  document.getElementById('flowSteps').innerHTML=STEPS.map((st,i)=>{
+    let cls='fstep';
+    if(st.n===S.step)cls+=' active';
+    else if(st.n<S.step)cls+=' done';
+    else if(!canGoStep(st.n))cls+=' locked';
+    const icon=st.n<S.step?'✓':st.n;
+    const arrow=i<STEPS.length-1?'<span class="farrow">›</span>':'';
+    return`<div class="${cls}" onclick="goStep(${st.n})"><div class="fnum">${icon}</div>
+      <div><div class="flabel">${st.label}</div><div class="fmeta">${st.meta}</div></div></div>${arrow}`;
+  }).join('');
+}
+
+function goStep(n){
+  if(!canGoStep(n)&&n!==S.step&&n>S.step)return;
+  S.step=n;render();
+}
+
+// ── STEP 1 ──
+function renderStep1(){
+  const mc=document.getElementById('mainContent');
+  if(!S.aiDone){
+    mc.innerHTML=`<div class="ai-card">
+      <div style="margin-bottom:10px;"><span class="step-label-badge art">🎨 Art Team</span></div>
+      <div class="ai-header"><div class="ai-icon">🤖</div>
+        <div><h2>AI Mismatch Check</h2><p>Upload Draft 1 to compare against the latest SOS product data.</p></div>
+      </div>
+      <div class="upload-zone" onclick="startAICheck()">
+        <div class="upload-icon">📄</div>
+        <p><strong>Click to upload Draft 1</strong> or drag & drop</p>
+        <p style="margin-top:3px;font-size:11.5px;">SVG, PDF, JPEG accepted</p>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:9px;align-items:center;">
+        <button class="btn-primary" onclick="startAICheck()">🔍 Run AI Check</button>
+        <span style="font-size:11.5px;color:var(--ink-soft);">Checks prices, descriptions, promo types and images against SOS</span>
+      </div>
+    </div>`;
+    setBanner('info','ℹ Art team: Upload Draft 1 and run the automated mismatch check against SOS data.');
+    setFooter(`<span class="footer-stats">Waiting for Draft 1 upload</span>`);
+  } else {
+    mc.innerHTML=`<div class="ai-card">
+      <div style="margin-bottom:10px;"><span class="step-label-badge ai">🤖 AI Matching System</span></div>
+      <div class="ai-header"><div class="ai-icon">✅</div>
+        <div><h2>AI Check Complete</h2><p>Draft 1 vs SOS data · WW 2625/26 · Scanned ${mismatches.length+48} items total</p></div>
+      </div>
+      <div class="summary-boxes">
+        <div class="sum-box"><div class="sv red">${mismatches.length}</div><div class="sl">Mismatches found</div></div>
+        <div class="sum-box"><div class="sv green">48</div><div class="sl">Items matched</div></div>
+        <div class="sum-box"><div class="sv amber">4</div><div class="sl">Price issues</div></div>
+        <div class="sum-box"><div class="sv amber">2</div><div class="sl">Description issues</div></div>
+        <div class="sum-box"><div class="sv amber">2</div><div class="sl">Other issues</div></div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:9px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="goStep(2)">View Mismatch Report →</button>
+        <button class="btn-secondary" onclick="S.aiDone=false;render()">Re-run Check</button>
+      </div>
+    </div>`;
+    setBanner('warn',`⚠ AI found <b>${mismatches.length} mismatches</b>. Buyer will decide what actually needs to change.`);
+    setFooter(`<span class="footer-stats">AI Check complete · <b class="err">${mismatches.length} mismatches</b></span><span class="spacer"></span><button class="btn-primary" onclick="goStep(2)">View Mismatch Report →</button>`);
+  }
+}
+
+function startAICheck(){
+  const mc=document.getElementById('mainContent');
+  const stages=[
+    {label:'Loading Draft 1',icon:'📄'},
+    {label:'Fetching latest SOS data',icon:'☁️'},
+    {label:'Matching prices (56 items)',icon:'💰'},
+    {label:'Matching descriptions & pack sizes',icon:'📝'},
+    {label:'Checking promo types',icon:'🏷️'},
+    {label:'Image completeness check',icon:'🖼️'},
+    {label:'Generating mismatch report',icon:'📊'},
+  ];
+  mc.innerHTML=`<div class="ai-card">
+    <div class="ai-header"><div class="ai-icon">🤖</div><div><h2>Running AI Check…</h2></div></div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="pbFill" style="width:0%"></div></div>
+    <div class="progress-steps" id="pSteps">
+      ${stages.map((s,i)=>`<div class="progress-step"><span class="ps-icon">${s.icon}</span>
+        <span class="ps-label">${s.label}</span><span class="ps-status" id="pss${i}">Waiting</span></div>`).join('')}
+    </div>
+  </div>`;
+  let i=0;
+  function tick(){
+    if(i<stages.length){
+      if(i>0){const p=document.getElementById('pss'+(i-1));if(p){p.textContent='Done';p.className='ps-status done';}}
+      const c=document.getElementById('pss'+i);if(c){c.textContent='Running…';c.className='ps-status running';}
+      const pf=document.getElementById('pbFill');if(pf)pf.style.width=Math.round(((i+1)/stages.length)*100)+'%';
+      i++;setTimeout(tick,420);
+    } else {
+      const l=document.getElementById('pss'+(stages.length-1));if(l){l.textContent='Done';l.className='ps-status done';}
+      setTimeout(()=>{S.aiDone=true;render();},300);
+    }
+  }
+  tick();
+}
+
+// ── STEP 2: MISMATCH REPORT (3 tabs) ──
+function renderStep2(){
+  const isArt=S.role==='art';
+  const isBuyer=S.role==='buyer';
+  const total=mismatches.filter(m=>!m.isManual).length;
+  const actionNeeded=pendingCount()+needsCrCount();
+  const crCount=crAddedCount();
+  const manualCount=manualCRCount();
+
+  let badge1=actionNeeded>0?`<span class="stab-badge">${actionNeeded} left</span>`:`<span class="stab-badge ok">Done</span>`;
+  let badge2=manualCount>0?`<span class="stab-badge amber">${manualCount}</span>`:'';
+  let badge3=crCount>0?`<span class="stab-badge purple">${crCount} CR</span>`:'';
+
+  document.getElementById('mainContent').innerHTML=`
+  <div style="margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span class="step-label-badge ${isArt?'art':isBuyer?'buyer':'ae'}">
+      ${isArt?'🎨 Art Team (view only)':isBuyer?'🛒 Buyer':'📋 AE'}
+    </span>
+    <button class="dph-btn" style="font-size:11px;" onclick="S.showDesign=!S.showDesign;renderStep2()">
+      ${S.showDesign?'◀ Hide Design':'▶ Show Design'}
+    </button>
+  </div>
+  <div class="split-pane ${S.showDesign?'':'collapsed-design'}" id="splitPane">
+    <div class="design-panel" id="designPanel">
+      <div class="design-panel-header">
+        <div>
+          <div class="dph-title">📄 Draft 1 — WW 2625/26
+            <span style="font-size:9.5px;background:var(--amber-soft);color:var(--amber);padding:2px 6px;border-radius:4px;font-weight:700;">
+              ${actionNeeded} unresolved
+            </span>
+          </div>
+          <div class="dph-meta">Click a row to highlight position</div>
+        </div>
+        <div class="dph-actions">
+          <button class="dph-btn" onclick="S.zoomLevel=Math.max(0.7,S.zoomLevel-0.15);applyZoom()">−</button>
+          <button class="dph-btn" id="zoomLabel" style="width:44px;text-align:center;cursor:default;">100%</button>
+          <button class="dph-btn" onclick="S.zoomLevel=Math.min(1.8,S.zoomLevel+0.15);applyZoom()">+</button>
+        </div>
+      </div>
+      <div class="design-scroll">
+        <div id="brochureWrap" style="transform-origin:top left;transition:transform .2s;">${buildBrochureHTML()}</div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="subtab-bar">
+        <button class="subtab ${S.activeSubtab===1?'active':''}" onclick="switchSubtab(1)">
+          📋 Review ${badge1}
+        </button>
+        ${isBuyer?`<button class="subtab ${S.activeSubtab===2?'active':''}" onclick="switchSubtab(2)">
+          ➕ Add CR ${badge2}
+        </button>`:''}
+        <button class="subtab ${S.activeSubtab===3?'active':''}" onclick="switchSubtab(3)">
+          📤 CR Summary ${badge3}
+        </button>
+      </div>
+      <div class="subtab-content">
+        ${S.activeSubtab===1?renderSubtab1(isBuyer,total):''}
+        ${S.activeSubtab===2&&isBuyer?renderSubtab2():''}
+        ${S.activeSubtab===3?renderSubtab3(isBuyer):''}
+      </div>
+    </div>
+  </div>`;
+
+  applyZoom();
+  updateBannerAndFooter(isArt,isBuyer,total);
+}
+
+function switchSubtab(n){S.activeSubtab=n;renderStep2();}
+
+// TAB 1: Review
+function renderSubtab1(isBuyer,total){
+  let list=mismatches.filter(m=>{
+    if(m.isManual)return false; // manual CRs don't show in AI report tab
+    if(S.filter!=='all'&&buyerStatus(m)!==S.filter)return false;
+    if(S.search){const q=S.search.toLowerCase();if(!m.en.toLowerCase().includes(q)&&!m.barcode.includes(q))return false;}
+    return true;
+  });
+  const doneCount=acceptedCount()+crAddedCount()-manualCRCount();
+  const pct=total?Math.round((doneCount/total)*100):0;
+
+  return`
+  <div class="report-toolbar">
+    <input type="text" placeholder="Search product or barcode…" value="${esc(S.search)}" oninput="S.search=this.value;renderStep2()">
+  </div>
+  <div style="padding:6px 10px;border-bottom:1px solid var(--line);display:flex;gap:4px;flex-wrap:wrap;flex-shrink:0;background:#fff;">
+    <div class="chip ${S.filter==='all'?'active':''}" onclick="S.filter='all';renderStep2()">All (${total})</div>
+    <div class="chip ${S.filter==='pending'?'active':''}" onclick="S.filter='pending';renderStep2()">⏳ Pending (${pendingCount()})</div>
+    <div class="chip ${S.filter==='accepted'?'active':''}" onclick="S.filter='accepted';renderStep2()">No Edit(${acceptedCount()})</div>
+    <div class="chip ${S.filter==='needs_cr'?'active':''}" onclick="S.filter='needs_cr';renderStep2()">✏️ Needs CR (${needsCrCount()})</div>
+    <div class="chip ${S.filter==='cr_added'?'active':''}" onclick="S.filter='cr_added';renderStep2()">📤 CR Added (${crAddedCount()-manualCRCount()})</div>
+  </div>
+  <div class="progress-strip">
+    <span style="font-size:10.5px;color:var(--ink-soft);white-space:nowrap;">Buyer review progress</span>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <span style="font-size:11px;font-weight:700;white-space:nowrap;">
+      <span style="color:var(--green)">${doneCount}</span><span style="color:var(--ink-soft)"> / ${total}</span>
+    </span>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead><tr>
+        <th></th><th>Product</th><th>Type</th><th>SOS Expected</th><th>Draft 1 Value</th>
+        ${isBuyer?`<th>Status</th><th>Decision</th>`:`<th>Buyer Decision</th><th>Change Request</th>`}
+      </tr></thead>
+      <tbody id="tbody2">${list.map(m=>rowHTML2(m,isBuyer)).join('')}</tbody>
+    </table>
+  </div>
+  ${isBuyer?`<div style="font-size:10px;color:var(--ink-soft);padding:5px 10px;border-top:1px solid var(--line);flex-shrink:0;background:#FAFAF8;">
+    <b>Accept</b> the item as-is, or check <b>Request Edit</b> — all checked items will appear in the ➕ Add CR tab for you to fill in details together.
+  </div>`:`<div style="font-size:10px;color:var(--ink-soft);padding:5px 10px;border-top:1px solid var(--line);flex-shrink:0;background:#FAFAF8;">
+    Read-only — Buyer is deciding. You'll receive their Change Requests once submitted.
+  </div>`}`;
+}
+
+function rowHTML2(m,isBuyer){
+  const isSelected=S.selectedMismatch===m.id;
+  const crOpen=S.openCRInline===m.id;
+  const badge=statusBadgeHTML(m);
+
+  const decisionCols=isBuyer?`
+    <td>${badge}</td>
+    <td onclick="event.stopPropagation()" style="white-space:nowrap;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="bt-btn no ${m.buyerWantsEdit===false?'active':''}" onclick="setBuyerWantsEdit(${m.id},false)">No Edit</button>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:3px 6px;border-radius:5px;border:1px solid ${m.buyerWantsEdit===true?'var(--purple)':'var(--line)'};background:${m.buyerWantsEdit===true?'var(--purple-soft)':'#fff'};transition:all .1s;" onclick="event.stopPropagation()">
+          <input type="checkbox" style="accent-color:var(--purple);width:13px;height:13px;cursor:pointer;" ${m.buyerWantsEdit===true?'checked':''} onchange="toggleRequestEdit(${m.id},this.checked)">
+          <span style="font-size:10px;font-weight:700;color:${m.buyerWantsEdit===true?'var(--purple)':'var(--slate)'};">Request Edit</span>
+        </label>
+      </div>
+      ${m.buyerWantsEdit===true?`<div style="margin-top:4px;">
+        ${m.crAdded?`<span class="cr-saved-badge" style="font-size:9.5px;">📤 CR saved</span> <button class="cr-edit-link" onclick="event.stopPropagation();switchSubtabAndPreselect(${m.id})">Edit in Add CR →</button>`
+        :`<button class="cr-edit-link" style="color:var(--purple);" onclick="event.stopPropagation();switchSubtabAndPreselect(${m.id})">✏️ Fill in Add CR →</button>`}
+      </div>`:''}
+    </td>`:`
+    <td>${badge}</td>
+    <td style="font-size:10.5px;color:var(--ink-soft);max-width:150px;">
+      ${m.crAdded?`<b style="color:var(--purple)">${esc(m.cr.typeLabel||m.cr.type)}</b>`:'<span style="color:var(--line)">—</span>'}
+    </td>`;
+
+  const mainRow=`<tr class="${rowClassFor(m)}${isSelected?' row-selected':''}" data-id="${m.id}" onclick="selectMismatch(${m.id})">
+    <td class="mono" style="color:var(--slate);font-size:9.5px;width:28px;">#${m.id}</td>
+    <td><div style="display:flex;align-items:center;gap:5px;">
+      <div class="thumb-sm" style="background:${EMOJI_BG[m.id%EMOJI_BG.length]}">${m.emoji}</div>
+      <div><div class="pname">${esc(m.en)}</div><div class="pname-th th">${esc(m.th)}</div></div>
+    </div></td>
+    <td><span class="mismatch-type ${m.type}">${TYPE_LABEL[m.type]||'Manual'}</span></td>
+    <td><span class="val-sos">${esc(m.sosVal)}</span></td>
+    <td><span class="val-draft">${esc(m.draftVal)}</span></td>
+    ${decisionCols}
+  </tr>`;
+
+  if(!isBuyer||!crOpen)return mainRow;
+
+  // ── AI-Suggest-aware inline CR form ──
+  // For price mismatches: show integer-only price input (AI suggested the fix)
+  // For other types: show AI suggestion info + redirect to Add CR tab
+
+  const aiSuggestedPrice = m.type === 'price' ? (m.sosVal.replace(/[^\d]/g,'') || '') : '';
+  const currentInlinePrice = m.cr.fields.correctedPrice !== undefined ? m.cr.fields.correctedPrice : aiSuggestedPrice;
+
+  let inlineFormBody = '';
+
+  if (m.type === 'price') {
+    // Price mismatch: AI-suggested CR — integer-only price input
+    inlineFormBody = `
+      <div style="background:var(--blue-soft);border:1px solid rgba(37,99,168,0.2);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--blue);">
+        <span style="font-size:14px;">🤖</span>
+        <div><b>AI Suggestion:</b> Update price from <b style="color:var(--red);">${esc(m.draftVal)}</b> → <b style="color:var(--green);">${esc(m.sosVal)}</b></div>
+      </div>
+      <div class="cr-note-wrap" style="margin-top:2px;">
+        <div class="cr-note-label">Corrected Price <span style="font-weight:400;text-transform:none;color:var(--slate);">(฿ integers only)</span></div>
+        <div style="position:relative;max-width:180px;">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;color:var(--ink-soft);">฿</span>
+          <input
+            id="cr-price-${m.id}"
+            type="number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            style="width:100%;padding:8px 9px 8px 28px;border:1.5px solid ${currentInlinePrice?'var(--purple)':'var(--line)'};border-radius:8px;font-family:inherit;font-size:16px;font-weight:800;color:var(--ink);background:#fff;"
+            placeholder="${aiSuggestedPrice||'0'}"
+            value="${esc(currentInlinePrice)}"
+            oninput="setPriceInlineCR(${m.id},this.value)"
+            onkeypress="return /[0-9]/.test(event.key)"
+          >
+        </div>
+        <div style="font-size:10px;color:var(--slate);margin-top:4px;">⚠ Only whole numbers accepted. For other corrections, use <b>Add CR</b> tab.</div>
+      </div>`;
+    // auto-set the CR type
+    if(!m.cr.type) m.cr.type = 'Change price';
+
+  } else {
+    // Non-price mismatch: nudge to Add CR tab
+    const typeIconMap = {desc:'📝',promo:'🏷️',image:'🖼️'};
+    const typeIcon = typeIconMap[m.type] || '✏️';
+    const typeLabelMap = {desc:'Description',promo:'Promo Badge',image:'Product Image'};
+    const typeLabel = typeLabelMap[m.type] || m.type;
+    inlineFormBody = `
+      <div style="background:var(--blue-soft);border:1px solid rgba(37,99,168,0.2);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--blue);">
+        <span style="font-size:14px;">🤖</span>
+        <div><b>AI Suggestion (${typeIcon} ${typeLabel}):</b> "${esc(m.draftVal)}" → "${esc(m.sosVal)}"</div>
+      </div>
+      <div style="background:#fff;border:1.5px dashed rgba(109,40,217,0.3);border-radius:9px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);">📋 Detailed corrections go in Add CR</div>
+        <div style="font-size:11px;color:var(--ink-soft);line-height:1.5;">This mismatch type requires a detailed Change Request.<br>Please use the <b>➕ Add CR</b> tab to describe the exact correction needed.</div>
+        <button class="btn-purple" style="font-size:11.5px;padding:7px 16px;" onclick="switchSubtabAndPreselect(${m.id})">
+          ➕ Go to Add CR for this product
+        </button>
+      </div>`;
+    if(!m.cr.type) m.cr.type = 'Change '+typeLabel.toLowerCase();
+  }
+
+  const inlineRow=`<tr class="cr-inline-row">
+    <td colspan="7">
+      <div class="cr-inline-body">
+        <div class="cr-inline-context">
+          <span style="font-size:11px;color:var(--ink-soft);">AI found:</span>
+          <span class="cr-ctx-val draft">${esc(m.draftVal)}</span>
+          <span class="cr-ctx-arrow">→</span>
+          <span style="font-size:11px;color:var(--ink-soft);">should be</span>
+          <span class="cr-ctx-val sos">${esc(m.sosVal)}</span>
+          <span style="flex:1;"></span>
+          <button style="background:none;border:none;font-size:11px;color:var(--slate);cursor:pointer;padding:0;" onclick="closeInlineCR(${m.id})">✕ Close</button>
+        </div>
+        ${inlineFormBody}
+        <div class="cr-inline-actions">
+          ${m.type==='price'?`
+          <button class="cr-save-btn" ${currentInlinePrice?'':'disabled'} onclick="saveCRInline(${m.id})">
+            ${m.crAdded?'✅ Update CR':'📤 Save CR'}
+          </button>
+          <button class="cr-cancel-btn" onclick="closeInlineCR(${m.id})">Cancel</button>
+          ${m.crAdded?`<button class="cr-remove-btn" onclick="removeCR(${m.id})">Remove CR</button>`:''}
+          `:`
+          <button class="cr-cancel-btn" onclick="closeInlineCR(${m.id})">Close</button>
+          `}
+        </div>
+      </div>
+    </td>
+  </tr>`;
+  return mainRow+inlineRow;
+}
+
+// ── Inline CR handlers ──
+function openInlineCR(id){
+  const m=mismatches.find(x=>x.id===id);
+  if(m)m.buyerWantsEdit=true;
+  S.openCRInline=id;S.selectedMismatch=id;
+  renderStep2();
+  const cell=document.getElementById('bc-'+id);
+  if(cell){cell.classList.add('highlighted');cell.scrollIntoView({behavior:'smooth',block:'nearest'});}
+}
+function closeInlineCR(id){S.openCRInline=null;renderStep2();}
+function setCRTypeInline(id,type){
+  const m=mismatches.find(x=>x.id===id);
+  if(m)m.cr.type=type;
+  renderStep2();
+}
+function setCRNoteInline(id,val){
+  const m=mismatches.find(x=>x.id===id);
+  if(m){m.cr.customNote=(val||'').slice(0,120);}
+  const charEl=document.getElementById(`cr-chars-${id}`);
+  if(charEl)charEl.textContent=val.length+'/120';
+}
+function setPriceInlineCR(id,val){
+  // Only accept integers — strip any non-digit characters
+  const intVal=val.replace(/[^\d]/g,'');
+  const m=mismatches.find(x=>x.id===id);
+  if(m){
+    m.cr.fields.correctedPrice=intVal;
+    m.cr.type='Change price';
+    m.cr.customNote=intVal?`Correct price: \u0e3f${intVal}`:'';
+  }
+  const el=document.getElementById(`cr-price-${id}`);
+  if(el&&el.value!==intVal)el.value=intVal;
+  const saveBtn=el&&el.closest('.cr-inline-body')&&el.closest('.cr-inline-body').querySelector('.cr-save-btn');
+  if(saveBtn){saveBtn.disabled=!intVal;}
+}
+function toggleRequestEdit(id, checked){
+  const m=mismatches.find(x=>x.id===id);
+  if(!m)return;
+  if(checked){
+    m.buyerWantsEdit=true;
+  } else {
+    m.buyerWantsEdit=null;
+    m.crAdded=false;
+    m.cr={type:'',fields:{},customNote:''};
+  }
+  renderStep2();
+}
+function switchSubtabAndPreselect(id){
+  const m=mismatches.find(x=>x.id===id);
+  if(m)m.buyerWantsEdit=true;
+  S.activeSubtab=2;
+  renderStep2();
+  setTimeout(()=>{
+    const el=document.getElementById('cr-card-'+id);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },80);
+}
+function saveCRInline(id){
+  const m=mismatches.find(x=>x.id===id);
+  if(!m||!m.cr.type)return;
+  if(m.type==='price'&&!m.cr.fields.correctedPrice)return;
+  m.crAdded=true;S.openCRInline=null;
+  renderStep2();
+}
+function removeCR(id){
+  const m=mismatches.find(x=>x.id===id);
+  if(!m)return;
+  m.crAdded=false;m.cr={type:'',fields:{},customNote:''};m.buyerWantsEdit=null;
+  S.openCRInline=null;renderStep2();
+}
+function setBuyerWantsEdit(id,val){
+  const m=mismatches.find(x=>x.id===id);
+  if(m){
+    m.buyerWantsEdit=val;
+    if(val!==true){m.crAdded=false;m.cr={type:'',fields:{}};}
+    if(S.openCRInline===id&&val===false)S.openCRInline=null;
+  }
+  renderStep2();
+}
+
+// ══ TAB 2: ADD CR — shows all "Request Edit" checked items + manual CRs ══
+function renderSubtab2(){
+  const checkedItems = mismatches.filter(m=>m.buyerWantsEdit===true&&!m.isManual);
+  const savedManualCRs = mismatches.filter(m=>m.isManual&&m.crAdded);
+  const hasAnything = checkedItems.length>0||savedManualCRs.length>0;
+
+  return`<div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+  <div class="add-cr-panel">
+
+    ${checkedItems.length>0?`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <div style="font-size:13px;font-weight:800;">Change Requests</div>
+        <div style="font-size:11px;color:var(--ink-soft);margin-top:2px;">${checkedItems.length} item${checkedItems.length!==1?'s':''} checked for edit — fill in details below</div>
+      </div>
+      <button class="dph-btn" onclick="S.activeSubtab=1;renderStep2()">← Back to Review</button>
+    </div>
+
+    ${checkedItems.map(m=>{
+      const crState = m.cr;
+      const isDone = m.crAdded;
+      return`
+      <div id="cr-card-${m.id}" style="background:${isDone?'var(--green-tint)':'#fff'};border:2px solid ${isDone?'var(--green)':'var(--purple)'};border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div class="thumb-sm" style="background:${EMOJI_BG[m.id%EMOJI_BG.length]};width:34px;height:34px;font-size:16px;">${m.emoji}</div>
+          <div style="flex:1;">
+            <div style="font-size:12.5px;font-weight:800;">${esc(m.en)}</div>
+            <div style="font-size:10.5px;color:var(--ink-soft);margin-top:1px;">
+              <span class="mismatch-type ${m.type}" style="font-size:9px;">${TYPE_LABEL[m.type]||'Manual'}</span>
+              &nbsp;AI found: <span style="color:var(--red);font-weight:700;">${esc(m.draftVal)}</span>
+              → should be <span style="color:var(--green);font-weight:700;">${esc(m.sosVal)}</span>
+            </div>
+          </div>
+          ${isDone?`<span style="font-size:10px;font-weight:700;color:var(--green);background:var(--green-soft);padding:3px 9px;border-radius:5px;">✓ Saved</span>`:''}
+          <button onclick="toggleRequestEdit(${m.id},false)" style="background:none;border:none;font-size:11px;color:var(--slate);cursor:pointer;padding:2px 6px;border-radius:4px;font-family:inherit;" title="Uncheck this item">✕</button>
+        </div>
+
+        <!-- Case type -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">What needs to change? <span style="color:var(--red);">*</span></div>
+          <select class="styled-select ${crState.type?'selected':''}" onchange="setCRTypeForItem(${m.id},this.value)">
+            <option value="">— Select correction type —</option>
+            ${Object.entries(CR_CASES).map(([k,v])=>`<option value="${k}" ${crState.type===k?'selected':''}>${v.label}</option>`).join('')}
+          </select>
+          ${crState.type&&CR_CASES[crState.type]?`<div class="form-hint" style="color:var(--purple);margin-top:4px;">${CR_CASES[crState.type].hint}</div>`:''}
+        </div>
+
+        <!-- Dynamic fields -->
+        ${crState.type&&CR_CASES[crState.type]?`
+        <div style="margin-bottom:10px;">
+          <div style="font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Details</div>
+          ${renderDynamicFieldsForItem(m.id, crState.type, crState.fields||{})}
+        </div>`:''}
+
+        <!-- Saved detail summary shown when crAdded -->
+        ${isDone&&crState.typeLabel?`
+        <div style="background:var(--green-soft);border:1px solid var(--green);border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11px;">
+          <div style="font-weight:700;color:var(--green);margin-bottom:4px;">✓ ${esc(crState.typeLabel)}</div>
+          ${Object.entries(crState.fields||{}).filter(([,v])=>v).map(([k,v])=>`<div style="color:var(--ink-soft);">${esc(k)}: <b style="color:var(--ink);">${esc(v)}</b></div>`).join('')}
+          ${crState.customNote?`<div style="color:var(--ink-soft);margin-top:3px;">Note: <b style="color:var(--ink);">${esc(crState.customNote)}</b></div>`:''}
+        </div>`:''}
+
+        <!-- Note -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Additional note <span style="text-transform:none;font-weight:600;color:var(--slate);">(optional)</span></div>
+          <textarea class="cr-note-input" rows="2" maxlength="120" placeholder="Any extra context for Art…"
+            oninput="setCRNoteForItem(${m.id},this.value)">${esc(crState.customNote||'')}</textarea>
+        </div>
+
+        <!-- Save button -->
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="cr-save-btn" ${crState.type?'':'disabled'} onclick="saveCRForItem(${m.id})">
+            ${isDone?'✅ Update CR':'📤 Save CR'}
+          </button>
+          ${isDone?`<button class="cr-cancel-btn" onclick="unsaveCRForItem(${m.id})">Clear</button>`:''}
+        </div>
+      </div>`;
+    }).join('')}
+    `:''}
+
+    <!-- Manual CR — always visible, for any product -->
+    <div style="margin-top:${checkedItems.length>0?'8px':'0'}">
+      <div style="font-size:11px;font-weight:800;color:var(--ink);margin-bottom:10px;">➕ Add a CR for any product</div>
+      <div class="form-section">
+        <div class="form-section-label">① Select Product</div>
+        <div class="form-row">
+          <select class="styled-select ${newCR.productId?'selected':''}" id="ncr-product" onchange="setNewCRProduct(this.value)">
+            <option value="">— Choose a product from the brochure —</option>
+            <optgroup label="AI-flagged mismatches">
+              ${mismatches.filter(m=>!m.isManual).map(m=>`<option value="${m.id}" ${newCR.productId==m.id?'selected':''}>${m.emoji} ${m.en}</option>`).join('')}
+            </optgroup>
+            <optgroup label="Other products in brochure">
+              ${allProducts.filter(p=>p.id.toString().startsWith('x')).map(p=>`<option value="new_${p.id}" ${newCR.productId==='new_'+p.id?'selected':''}>${p.emoji} ${p.en}</option>`).join('')}
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      ${newCR.productId?`
+      <div class="form-section">
+        <div class="form-section-label">② What Needs to Change?</div>
+        <select class="styled-select ${newCR.caseType?'selected':''}" id="ncr-case" onchange="setNewCRCase(this.value)">
+          <option value="">— Select the type of correction —</option>
+          ${Object.entries(CR_CASES).map(([k,v])=>`<option value="${k}" ${newCR.caseType===k?'selected':''}>${v.label}</option>`).join('')}
+        </select>
+      </div>`:''}
+      ${newCR.productId&&newCR.caseType?`
+      <div class="form-section">
+        <div class="form-section-label">③ Fill in the Details</div>
+        ${renderDynamicFields(newCR.caseType)}
+      </div>`:''}
+    </div>
+
+    ${savedManualCRs.length>0?`
+    <div style="margin-top:8px;">
+      <div style="font-size:10px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">✅ Saved Manual CRs (${savedManualCRs.length})</div>
+      ${savedManualCRs.map(m=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 11px;background:var(--teal-soft);border:1px solid var(--teal);border-radius:8px;margin-bottom:6px;">
+          <span style="font-size:14px;">${m.emoji}</span>
+          <div style="flex:1;"><div style="font-size:11.5px;font-weight:700;">${esc(m.en)}</div>
+          <div style="font-size:10.5px;color:var(--teal);margin-top:2px;">${esc(m.cr.typeLabel||m.cr.type)} ${m.cr.customNote?'— '+esc(m.cr.customNote):''}</div></div>
+          <button onclick="removeManualCR(${m.id})" style="background:none;border:none;font-size:10px;color:var(--slate);cursor:pointer;font-weight:700;">✕</button>
+        </div>`).join('')}
+    </div>`:''}
+
+  </div>
+  <div class="add-cr-submit-area">
+    <button class="add-cr-submit-btn" ${newCR.productId&&newCR.caseType?'':'disabled'} onclick="submitNewCR()">
+      ➕ Save Manual CR
+    </button>
+    <div class="add-cr-saved-list">${checkedItems.filter(m=>m.crAdded).length>0?`${checkedItems.filter(m=>m.crAdded).length} of ${checkedItems.length} CR${checkedItems.length!==1?'s':''} filled in`:''}</div>
+  </div>
+  </div>`;
+}
+
+function renderDynamicFields(caseType){
+  const schema=CR_CASES[caseType];
+  if(!schema)return'';
+  return schema.fields.map(f=>{
+    const val=newCR.fields[f.key]||'';
+    switch(f.type){
+      case'price':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <div class="df-label">Enter amount (฿ Thai Baht)</div>
+          <div class="price-input-wrap">
+            <span class="currency-prefix">฿</span>
+            <input type="number" class="price-input" placeholder="${f.placeholder}" value="${esc(val)}"
+              oninput="setNewCRField('${f.key}',this.value)" min="0" step="0.01">
+          </div>
+        </div>
+      </div>`;
+      case'textarea':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <textarea class="desc-input" rows="3" maxlength="300" placeholder="${f.placeholder}"
+            oninput="setNewCRField('${f.key}',this.value)">${esc(val)}</textarea>
+          <div style="text-align:right;font-size:9.5px;color:var(--slate);margin-top:2px;">${val.length}/300</div>
+        </div>
+      </div>`;
+      case'text':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <input type="text" class="desc-input" style="min-height:auto;resize:none;" maxlength="150" placeholder="${f.placeholder}"
+            value="${esc(val)}" oninput="setNewCRField('${f.key}',this.value)">
+        </div>
+      </div>`;
+      case'badge':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <div class="df-label">Select badge</div>
+          <div class="badge-picker">
+            ${BADGE_OPTIONS.map(b=>`<div class="badge-option ${val===b.value?'selected':''}" onclick="setNewCRField('${f.key}','${b.value}');renderStep2()">
+              ${b.label}<span class="badge-tag ${b.tag}">${b.tag.toUpperCase()}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+      case'packsize':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <div class="df-label">Correct size</div>
+          <div class="pack-row">
+            <input type="number" class="pack-qty" placeholder="e.g. 120" min="0"
+              value="${esc(val.split(' ')[0]||'')}"
+              oninput="setNewCRField('${f.key}',this.value+' '+(newCR.fields['${f.key}']||'').split(' ')[1])">
+            <select class="pack-unit" onchange="setNewCRField('${f.key}',(newCR.fields['${f.key}']||'').split(' ')[0]+' '+this.value)">
+              ${['g','kg','ml','L','pcs','pack','box'].map(u=>`<option value="${u}" ${(val||'').endsWith(u)?'selected':''}>${u}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>`;
+      default:return'';
+    }
+  }).join('');
+}
+
+function renderDynamicFieldsForItem(itemId, caseType, fields){
+  const schema=CR_CASES[caseType];
+  if(!schema)return'';
+  return schema.fields.map(f=>{
+    const val=fields[f.key]||'';
+    switch(f.type){
+      case'price':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <div class="price-input-wrap"><span class="currency-prefix">฿</span>
+            <input type="number" class="price-input" placeholder="${f.placeholder}" value="${esc(val)}"
+              oninput="setCRFieldForItem(${itemId},'${f.key}',this.value)" min="0" step="1">
+          </div>
+        </div></div>`;
+      case'textarea':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <textarea class="desc-input" rows="2" maxlength="300" placeholder="${f.placeholder}"
+            oninput="setCRFieldForItem(${itemId},'${f.key}',this.value)">${esc(val)}</textarea>
+        </div></div>`;
+      case'text':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field">
+          <input type="text" class="desc-input" style="min-height:auto;resize:none;" maxlength="150" placeholder="${f.placeholder}"
+            value="${esc(val)}" oninput="setCRFieldForItem(${itemId},'${f.key}',this.value)">
+        </div></div>`;
+      case'badge':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field"><div class="badge-picker">
+          ${BADGE_OPTIONS.map(b=>`<div class="badge-option ${val===b.value?'selected':''}" onclick="setCRFieldForItem(${itemId},'${f.key}','${b.value}');renderStep2()">
+            ${b.label}<span class="badge-tag ${b.tag}">${b.tag.toUpperCase()}</span>
+          </div>`).join('')}
+        </div></div></div>`;
+      case'packsize':return`<div class="form-row">
+        <label class="form-label">${f.label}</label>
+        <div class="dynamic-field"><div class="pack-row">
+          <input type="number" class="pack-qty" placeholder="e.g. 120" min="0" value="${esc(val.split(' ')[0]||'')}"
+            oninput="setCRFieldForItem(${itemId},'${f.key}',this.value+' '+(getCRFieldForItem(${itemId},'${f.key}')||'').split(' ')[1])">
+          <select class="pack-unit" onchange="setCRFieldForItem(${itemId},'${f.key}',(getCRFieldForItem(${itemId},'${f.key}')||'').split(' ')[0]+' '+this.value)">
+            ${['g','kg','ml','L','pcs','pack','box'].map(u=>`<option value="${u}" ${(val||'').endsWith(u)?'selected':''}>${u}</option>`).join('')}
+          </select>
+        </div></div></div>`;
+      default:return'';
+    }
+  }).join('');
+}
+function getCRFieldForItem(id,key){const m=mismatches.find(x=>x.id===id);return m&&m.cr.fields?m.cr.fields[key]||'':'';}
+function setCRFieldForItem(id,key,val){
+  const m=mismatches.find(x=>x.id===id);
+  if(m){if(!m.cr.fields)m.cr.fields={};m.cr.fields[key]=val;}
+}
+function setCRTypeForItem(id,val){
+  const m=mismatches.find(x=>x.id===id);
+  if(m){m.cr.type=val;m.cr.fields={};m.crAdded=false;}
+  renderStep2();
+}
+function setCRNoteForItem(id,val){
+  const m=mismatches.find(x=>x.id===id);
+  if(m)m.cr.customNote=(val||'').slice(0,120);
+}
+function saveCRForItem(id){
+  const m=mismatches.find(x=>x.id===id);
+  if(!m||!m.cr.type)return;
+  // cr.type holds the CR_CASES key (e.g. 'price') — save the key for schema lookup
+  m.cr.typeKey = m.cr.type;
+  m.cr.typeLabel = CR_CASES[m.cr.type] ? CR_CASES[m.cr.type].label : m.cr.type;
+  m.crAdded=true;
+  renderStep2();
+}
+function unsaveCRForItem(id){
+  const m=mismatches.find(x=>x.id===id);
+  if(!m)return;
+  m.crAdded=false;m.cr={type:'',fields:{},customNote:''};
+  renderStep2();
+}
+
+
+function setNewCRProduct(val){
+  newCR.productId=val;
+  newCR.caseType='';
+  newCR.fields={};
+  renderStep2();
+}
+function setNewCRCase(val){
+  newCR.caseType=val;
+  newCR.fields={};
+  renderStep2();
+}
+function setNewCRField(key,val){
+  newCR.fields[key]=val;
+  // Don't re-render to keep focus
+  const submitBtn=document.querySelector('.add-cr-submit-btn');
+  if(submitBtn)submitBtn.disabled=!canSubmitNewCR();
+}
+function canSubmitNewCR(){
+  if(!newCR.productId||!newCR.caseType)return false;
+  const schema=CR_CASES[newCR.caseType];
+  if(!schema)return false;
+  // At least one required field filled
+  const required=schema.fields.filter(f=>f.type!=='text'); // text fields are optional
+  return required.some(f=>newCR.fields[f.key]&&newCR.fields[f.key].trim());
+}
+
+function submitNewCR(){
+  if(!canSubmitNewCR())return;
+  const caseLabel=CR_CASES[newCR.caseType].label;
+  const detailNote=Object.values(newCR.fields).filter(Boolean).join(' | ');
+
+  if(newCR.productId.toString().startsWith('new_')){
+    // Product not in mismatches yet — create new entry
+    const srcProd=allProducts.find(p=>'new_'+p.id===newCR.productId);
+    const newId=Math.max(...mismatches.map(m=>m.id))+1;
+    mismatches.push({
+      id:newId,barcode:'',
+      en:srcProd?srcProd.en:'Unknown product',
+      th:srcProd?srcProd.th:'',
+      emoji:srcProd?srcProd.emoji:'📦',
+      type:'manual',
+      sosVal:'Buyer Requested',draftVal:'Current Draft',
+      buyerWantsEdit:true,
+      cr:{type:caseLabel,fields:{...newCR.fields},customNote:detailNote},
+      crAdded:true,isManual:true,buyerApproved:null,gridPos:mismatches.length,
+    });
+  } else {
+    // Existing mismatch — overlay the CR
+    const m=mismatches.find(x=>x.id==newCR.productId);
+    if(m){
+      m.buyerWantsEdit=true;
+      m.cr={type:caseLabel,fields:{...newCR.fields},customNote:detailNote};
+      m.crAdded=true;m.isManual=true;
+    }
+  }
+  // Reset form
+  newCR.productId='';newCR.caseType='';newCR.fields={};
+  renderStep2();
+}
+
+function removeManualCR(id){
+  const m=mismatches.find(x=>x.id===id);
+  if(!m)return;
+  if(m.isManual&&mismatches.indexOf(m)>=8){
+    mismatches.splice(mismatches.indexOf(m),1);
+  } else {
+    m.crAdded=false;m.cr={type:'',fields:{}};m.buyerWantsEdit=null;m.isManual=false;
+  }
+  renderStep2();
+}
+
+function exportAllCRs(){
+  const allCRs=mismatches.filter(m=>m.crAdded);
+  if(allCRs.length===0){alert('No Change Requests to export.');return;}
+  const lines=['Change Request Export — WW 2625/26 · Brochure Studio','Generated: '+new Date().toLocaleString(),'','#,Product,Type,SOS Value,Draft Value,CR Type,Details,Change Product'];
+  allCRs.forEach(m=>{
+    const changeProduct=m.cr.fields&&m.cr.fields._changeProduct?m.cr.fields._changeProduct:'';
+    lines.push([m.id,m.en,m.isManual?'Manual':'AI-flagged',m.sosVal,m.draftVal,m.cr.type||'',m.cr.customNote||'',changeProduct].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  });
+  const csv=lines.join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='CR_Export_WW2625-26.csv';
+  a.click();
+}
+
+// TAB 3: CR Summary
+function renderSubtab3(isBuyer){
+  const crItems=mismatches.filter(m=>m.crAdded&&!m.isManual);
+  const manualCRs=mismatches.filter(m=>m.crAdded&&m.isManual);
+  const acceptedItems=mismatches.filter(m=>m.buyerWantsEdit===false);
+  const pending=pendingCount();const needsCr=needsCrCount();
+  const ready=buyerDecisionComplete();
+
+  return`
+  <div class="cr-summary-panel">
+    <div class="summary-stats">
+      <div class="sstat purple"><div class="snum">${crItems.length}</div><div class="slabel">AI-flagged CRs</div></div>
+      <div class="sstat green"><div class="snum">${acceptedItems.length}</div><div class="slabel">Accepted as-is</div></div>
+      <div class="sstat slate"><div class="snum">${pending}</div><div class="slabel">Pending decision</div></div>
+    </div>
+    ${manualCRs.length>0?`
+    <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">
+      ➕ Manual Change Requests (${manualCRs.length})
+    </div>
+    ${manualCRs.map(m=>`<div class="summary-item has-manual-cr">
+      <div class="si-thumb" style="background:${EMOJI_BG[m.id%EMOJI_BG.length]}">${m.emoji}</div>
+      <div class="si-content">
+        <div class="si-name">${esc(m.en)}</div>
+        <div class="si-cr" style="color:var(--teal);">${esc(m.cr.type)} ${m.cr.customNote?'— '+esc(m.cr.customNote):''}</div>
+      </div>
+      <span class="si-badge manual">Manual</span>
+    </div>`).join('')}`:''}
+    ${crItems.length>0?`
+    <div style="font-size:10px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;margin-top:${manualCRs.length>0?'12px':'0'}">
+      AI-flagged Change Requests (${crItems.length})
+    </div>
+    ${crItems.map(m=>`<div class="summary-item has-cr">
+      <div class="si-thumb" style="background:${EMOJI_BG[m.id%EMOJI_BG.length]}">${m.emoji}</div>
+      <div class="si-content">
+        <div class="si-name">${esc(m.en)}</div>
+        <div class="si-cr">${(m.cr.typeLabel||m.cr.type)?`<b>${esc(m.cr.typeLabel||m.cr.type)}</b>`:''} ${m.cr.customNote?`— ${esc(m.cr.customNote)}`:''}</div>
+      </div>
+      <span class="si-badge cr">CR</span>
+    </div>`).join('')}`:''}
+    ${acceptedItems.length>0?`
+    <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin:12px 0 7px;">
+      Accepted as-is (${acceptedItems.length})
+    </div>
+    ${acceptedItems.map(m=>`<div class="summary-item no-cr">
+      <div class="si-thumb" style="background:${EMOJI_BG[m.id%EMOJI_BG.length]}">${m.emoji}</div>
+      <div class="si-content"><div class="si-name">${esc(m.en)}</div><div class="si-ok">✓ No change requested</div></div>
+      <span class="si-badge ok">OK</span>
+    </div>`).join('')}`:''}
+    ${pending>0?`<div style="font-size:11px;color:var(--red);font-weight:700;margin-top:10px;">⏳ ${pending} AI-flagged item(s) still need a Yes/No decision in the Review tab.</div>`:''}
+    ${needsCr>0?`<div style="font-size:11px;color:var(--amber);font-weight:700;margin-top:6px;">✏️ ${needsCr} item(s) marked "Request Edit" still need a CR.</div>`:''}
+  </div>
+  <div class="send-cr-area">
+    <textarea class="send-note-input" rows="2" maxlength="200" placeholder="Optional message to Art team…" oninput="S.sendNote=this.value">${esc(S.sendNote)}</textarea>
+    <div class="send-btn-row">
+      ${isBuyer
+        ?`<button class="btn-purple" onclick="submitBuyerCR()" ${ready?'':'disabled style="opacity:.5;cursor:not-allowed;"'}>
+            📤 Send All CRs to Art Team
+          </button>
+          ${!ready?`<span style="font-size:11px;color:var(--slate);">Every AI item needs a decision first</span>`:
+            (crItems.length+manualCRs.length)===0?`<span style="font-size:11px;color:var(--slate);">No CRs — sending as fully approved</span>`:''}`
+        :`<div style="font-size:11.5px;color:var(--slate);">Switch to 🛒 Buyer role to send CRs.</div>`}
+    </div>
+  </div>`;
+}
+
+function updateBannerAndFooter(isArt,isBuyer,total){
+  if(S.step!==2)return;
+  const pending=pendingCount(),accepted=acceptedCount(),needsCr=needsCrCount(),crAdded=crAddedCount();
+  if(isArt){
+    setBanner('info',`👀 Art Team — view only. Buyer is reviewing mismatches and adding Change Requests. You'll receive them once submitted.`);
+    setFooter(`<span class="footer-stats"><b>${total}</b> mismatches · <span class="ok">${accepted} accepted</span> · <span class="ok">${crAdded} CR added</span> · <span class="err">${pending} pending Buyer</span></span>`);
+  } else if(isBuyer){
+    if(pending>0)setBanner('warn',`⚠ ${pending} item(s) still need a decision — Accept or Request Edit.`);
+    else if(needsCr>0)setBanner('warn',`✏️ ${needsCr} item(s) marked "Request Edit" still need a CR.`);
+    else setBanner('success',`✅ All decisions made${crAdded>0?` — ${crAdded} CR(s) ready`:''} · Use ➕ Add CR to add more.`);
+    setFooter(`<span class="footer-stats"><span class="warn">${pending} pending</span> · <span class="ok">${accepted} accepted</span> · <span class="err">${needsCr} need CR</span> · <b class="ok">${crAdded} CR(s) saved</b></span>
+      <span class="spacer"></span>
+      <button class="btn-purple" onclick="switchSubtab(${(pending>0||needsCr>0)?1:3})">
+        ${(pending>0||needsCr>0)?'Finish Review →':'View CR Summary →'}
+      </button>`);
+  } else {
+    setBanner('info','ℹ Read-only view. Switch role to make changes.');
+    setFooter(`<span class="footer-stats"><b>${total}</b> mismatches · <span class="ok">${accepted} accepted</span> · <span class="ok">${crAdded} CR added</span> · <span class="err">${pending} pending</span></span>`);
+  }
+}
+
+function submitBuyerCR(){
+  if(!buyerDecisionComplete())return;
+  S.buyerCRSubmitted=true;S.artNoticeSent=true;S.step=3;render();
+}
+
+// ── BROCHURE ──
+function buildBrochureHTML(){
+  const cells=allProducts.slice(0,12).map((p,i)=>{
+    const mm=p.mismatch?mismatches.find(m=>m.id===p.mismatch):null;
+    const resolved=mm?(buyerStatus(mm)==='accepted'||buyerStatus(mm)==='cr_added'):true;
+    const isSelected=mm&&S.selectedMismatch===mm.id;
+    const pin=mm?`<div class="${resolved?'mismatch-pin resolved':'mismatch-pin'}">${mm.id}</div>`:'';
+    const hlClass=isSelected?(resolved?'highlighted-green':'highlighted'):'';
+    const bgC=EMOJI_BG[i%EMOJI_BG.length];
+    return`<div class="brochure-cell ${hlClass}" id="bc-${mm?mm.id:'x'+i}" onclick="${mm?`selectMismatch(${mm.id})`:''}">
+      ${pin}
+      <div class="bc-img" style="background:${bgC}">${p.emoji}</div>
+      <div class="bc-name">${p.en}</div>
+      ${p.orig?`<div class="bc-orig">${p.orig}</div>`:''}
+      <div class="bc-price">${p.price}</div>
+      <span class="bc-badge ${p.badge}">${p.badge==='bogo'?'BOGO':'SALE'}</span>
+    </div>`;
+  });
+  return`<div class="brochure-grid">${cells.join('')}</div>`;
+}
+
+function applyZoom(){
+  const w=document.getElementById('brochureWrap');
+  const zl=document.getElementById('zoomLabel');
+  if(w)w.style.transform=`scale(${S.zoomLevel})`;
+  if(zl)zl.textContent=Math.round(S.zoomLevel*100)+'%';
+}
+
+function selectMismatch(id){
+  S.selectedMismatch=S.selectedMismatch===id?null:id;
+  document.querySelectorAll('.brochure-cell').forEach(c=>{c.classList.remove('highlighted','highlighted-green');});
+  if(S.selectedMismatch){
+    const m=mismatches.find(x=>x.id===id);
+    const cell=document.getElementById('bc-'+id);
+    const resolved=buyerStatus(m)==='accepted'||buyerStatus(m)==='cr_added';
+    if(cell){cell.classList.add(resolved?'highlighted-green':'highlighted');cell.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  }
+  document.querySelectorAll('#tbody2 tr').forEach(r=>{
+    r.classList.toggle('row-selected',parseInt(r.dataset.id)===S.selectedMismatch);
+  });
+}
+
+// ── STEP 3 ──
+function renderStep3(){
+  const isArt=S.role==='art';
+  const crItems=mismatches.filter(m=>m.crAdded);
+  const total=mismatches.filter(m=>!m.isManual).length;
+  document.getElementById('mainContent').innerHTML=`
+  <div style="margin-bottom:8px;"><span class="step-label-badge art">🎨 Art Team · Review CR & Proceed to Draft 2</span></div>
+  <div class="approve-card">
+    <h2>Buyer CR Received — Review & Confirm</h2>
+    <div class="summary-grid">
+      <div class="scard green"><div class="snum">${acceptedCount()}</div><div class="slabel">Accepted as-is</div></div>
+      <div class="scard ${crItems.filter(m=>!m.isManual).length>0?'amber':'green'}"><div class="snum">${crItems.filter(m=>!m.isManual).length}</div><div class="slabel">AI CR to action</div></div>
+      <div class="scard teal"><div class="snum">${manualCRCount()}</div><div class="slabel">Manual CR to action</div></div>
+      <div class="scard slate"><div class="snum">${total}</div><div class="slabel">Total AI mismatches</div></div>
+    </div>
+
+    ${crItems.length>0?`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+
+      <!-- LEFT: Additional (Manual) CRs -->
+      <div style="border:2px solid var(--teal);border-radius:12px;overflow:hidden;">
+        <div style="background:var(--teal);padding:9px 13px;display:flex;align-items:center;gap:7px;">
+          <span style="font-size:16px;">➕</span>
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#fff;">Additional CRs</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.75);">Buyer-added · not AI-flagged</div>
+          </div>
+          <span style="margin-left:auto;background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;">${crItems.filter(m=>m.isManual).length} item${crItems.filter(m=>m.isManual).length!==1?'s':''}</span>
+        </div>
+        <div style="padding:10px;background:var(--teal-soft);min-height:80px;">
+          ${crItems.filter(m=>m.isManual).length>0
+            ? crItems.filter(m=>m.isManual).map(m=>`<div class="cr-item" style="border-color:var(--teal);">
+                <span class="ci-badge manual-cr">Manual</span>
+                <div class="ci-content">
+                  <div class="ci-name">${m.emoji} ${esc(m.en)}</div>
+                  <div class="ci-cr teal">${m.cr.type?`<b>${esc(m.cr.type)}</b>`:''} ${m.cr.customNote?`— "${esc(m.cr.customNote)}"`:''}</div>
+                  ${m.cr.fields&&m.cr.fields._changeProduct?`<div style="font-size:10px;color:var(--teal);margin-top:3px;">🔄 Change to: ${esc(m.cr.fields._changeProduct)}</div>`:''}
+                </div></div>`).join('')
+            : `<div style="font-size:11.5px;color:var(--teal);opacity:.7;padding:10px;text-align:center;">No additional CRs</div>`}
+        </div>
+      </div>
+
+      <!-- RIGHT: AI-flagged CRs -->
+      <div style="border:2px solid var(--purple);border-radius:12px;overflow:hidden;">
+        <div style="background:var(--purple);padding:9px 13px;display:flex;align-items:center;gap:7px;">
+          <span style="font-size:16px;">🤖</span>
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#fff;">AI-Flagged CRs</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.75);">From AI mismatch detection</div>
+          </div>
+          <span style="margin-left:auto;background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;">${crItems.filter(m=>!m.isManual).length} item${crItems.filter(m=>!m.isManual).length!==1?'s':''}</span>
+        </div>
+        <div style="padding:10px;background:var(--purple-soft);min-height:80px;">
+          ${crItems.filter(m=>!m.isManual).length>0
+            ? crItems.filter(m=>!m.isManual).map(m=>`<div class="cr-item" style="border-color:var(--purple);">
+                <span class="ci-badge has-cr">CR</span>
+                <div class="ci-content">
+                  <div class="ci-name">${m.emoji} ${esc(m.en)}</div>
+                  <div class="ci-cr">${m.cr.type?`<b>${esc(m.cr.type)}</b>`:''} ${m.cr.customNote?`— "${esc(m.cr.customNote)}"`:''}</div>
+                </div></div>`).join('')
+            : `<div style="font-size:11.5px;color:var(--purple);opacity:.7;padding:10px;text-align:center;">No AI-flagged CRs</div>`}
+        </div>
+      </div>
+
+    </div>`
+    :`<div style="background:var(--green-soft);border-radius:9px;padding:11px 14px;font-size:12px;color:var(--green);font-weight:700;margin-bottom:14px;">✅ No Change Requests — proceed directly to Draft 2.</div>`}
+
+    <p style="font-size:12px;color:var(--ink-soft);margin:14px 0;line-height:1.6;">Art incorporates all Buyer CRs into the artwork, then uploads Draft 2. AE will print Draft 1 at A3 for physical reference.</p>
+    <div class="notify-targets">
+      <div class="notif-card ae"><div class="nc-title">📋 AE</div>
+        <div class="nc-detail">Print <b>Draft 1 at A3</b> for physical reference during Draft 2 edits.</div>
+        <span class="nc-badge">Print Draft 1 A3</span></div>
+    </div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center;">
+      ${isArt?`<button class="btn-primary" onclick="S.step=4;render()">✅ Confirm & Start Draft 2 →</button>`
+        :`<div style="font-size:12.5px;color:var(--slate);padding:10px 0;">Only Art Team can proceed to Draft 2.</div>`}
+      <button class="btn-secondary" onclick="goStep(2)">← Back to Mismatch Report</button>
+      <button onclick="exportAllCRs()" style="margin-left:auto;background:var(--green);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;">📥 Export All CRs</button>
+    </div>
+  </div>`;
+  setBanner('success','Buyer\u2019s decisions are final & CRs received. Art team ready to produce Draft 2.');
+  setFooter(isArt?`<span class="spacer"></span><button class="btn-primary" onclick="S.step=4;render()">✅ Confirm & Start Draft 2 →</button>`:`<span class="footer-stats">Read-only · Art Team only</span>`);
+}
+
+// ── STEP 4 ──
+function renderStep4(){
+  const isArt=S.role==='art';
+  const crItems=mismatches.filter(m=>m.crAdded);
+  const noCRItems=mismatches.filter(m=>!m.crAdded&&!m.isManual);
+  document.getElementById('mainContent').innerHTML=`
+  <div style="margin-bottom:8px;"><span class="step-label-badge art">🎨 Art Team · Edit based on Buyer CR & upload Draft 2</span></div>
+  <div class="draft2-card">
+    <h2>Edit Artwork Based on Buyer CR — Upload Draft 2</h2>
+    <p style="font-size:12px;color:var(--ink-soft);margin-bottom:14px;line-height:1.6;">Incorporate all <b>${crItems.length} Change Request(s)</b> from the Buyer, then upload Draft 2.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">📝 ${crItems.length} Item(s) with CR</div>
+        ${crItems.length>0?crItems.map(m=>`<div class="cr-item">
+          <span class="ci-badge ${m.isManual?'manual-cr':'has-cr'}">${m.isManual?'Manual':'CR'}</span>
+          <div class="ci-content">
+            <div class="ci-name">${m.emoji} ${esc(m.en)}</div>
+            <div class="ci-cr ${m.isManual?'teal':''}">${m.cr.type?`<b>${esc(m.cr.type)}</b>`:''} ${m.cr.customNote?`"${esc(m.cr.customNote)}"`:''}</div>
+          </div></div>`).join('')
+          :`<div style="font-size:12px;color:var(--slate);padding:12px;background:#FAFAF8;border-radius:8px;">No CRs from Buyer</div>`}
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">✅ ${noCRItems.length} Item(s) — No CR</div>
+        ${noCRItems.slice(0,5).map(m=>`<div class="cr-item"><span class="ci-badge no-cr">OK</span>
+          <div class="ci-content"><div class="ci-name">${m.emoji} ${esc(m.en)}</div></div></div>`).join('')}
+        ${noCRItems.length>5?`<div style="font-size:11px;color:var(--slate);padding:6px 8px;">+ ${noCRItems.length-5} more…</div>`:''}
+      </div>
+    </div>
+    ${!S.draft2Uploaded?`<div style="border-top:1px solid var(--line);padding-top:16px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Upload Draft 2</div>
+      ${isArt?`<div class="upload-zone" onclick="S.draft2Uploaded=true;renderStep4()">
+        <div class="upload-icon">📄</div><p><strong>Click to upload Draft 2</strong></p>
+        <p style="margin-top:3px;font-size:11px;">SVG, PDF, JPEG accepted</p>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:9px;">
+        <button class="btn-primary" onclick="S.draft2Uploaded=true;renderStep4()">📤 Upload Draft 2</button>
+      </div>`:`<div style="font-size:12.5px;color:var(--slate);padding:12px 0;">Only Art Team can upload Draft 2.</div>`}
+    </div>`:`<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;align-items:center;gap:10px;background:var(--green-soft);border-radius:9px;padding:12px 16px;">
+      <span style="font-size:20px;">✅</span>
+      <div><div style="font-weight:700;font-size:13px;color:var(--green);">Draft 2 Uploaded</div>
+      <div style="font-size:11.5px;color:var(--green);opacity:.8;">Buyer has been notified to check Draft 2</div></div>
+      <span class="spacer"></span><button class="btn-primary" onclick="goStep(5)">Proceed to Buyer Approval →</button>
+    </div>`}
+  </div>`;
+  if(isArt&&!S.draft2Uploaded){setBanner('warn',`⚠ Art Team: Edit artwork based on ${crItems.length} CR(s), then upload Draft 2.`);setFooter(`<span class="footer-stats"><b>${crItems.length} CR(s)</b> to incorporate</span><span class="spacer"></span><button class="btn-primary" onclick="S.draft2Uploaded=true;renderStep4()">📤 Upload Draft 2</button>`);}
+  else if(S.draft2Uploaded){setBanner('success','✅ Draft 2 uploaded. Buyer is reviewing.');setFooter(`<span class="spacer"></span><button class="btn-primary" onclick="goStep(5)">Proceed to Buyer Approval →</button>`);}
+  else{setBanner('info','ℹ Art Team is editing artwork.');setFooter(`<span class="footer-stats">Waiting for Art to upload Draft 2</span>`);}
+}
+
+// ── STEP 5 ──
+function renderStep5(){
+  const isBuyer=S.role==='buyer';
+  const crItems=mismatches.filter(m=>m.crAdded);
+  const approvedCount=mismatches.filter(m=>m.buyerApproved===true).length;
+  const rejectedCount=mismatches.filter(m=>m.buyerApproved===false).length;
+  document.getElementById('mainContent').innerHTML=`
+  <div style="margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span class="step-label-badge buyer">🛒 Buyer · Check Draft 2 — No Edits</span>
+    <button class="dph-btn" style="font-size:11px;" onclick="S.showDesign=!S.showDesign;renderStep5()">
+      ${S.showDesign?'◀ Hide Design':'▶ Show Design'}
+    </button>
+  </div>
+  <div class="split-pane ${S.showDesign?'':'collapsed-design'}">
+    <div class="design-panel">
+      <div class="design-panel-header">
+        <div><div class="dph-title">📄 Draft 2 — WW 2625/26 <span style="font-size:9.5px;background:var(--green-soft);color:var(--green);padding:2px 6px;border-radius:4px;font-weight:700;">Verify CRs</span></div>
+        <div class="dph-meta">Click a row on the right to highlight here</div></div>
+        <div class="dph-actions">
+          <button class="dph-btn" onclick="S.zoomLevel=Math.max(0.7,S.zoomLevel-0.15);applyZoom()">−</button>
+          <button class="dph-btn" id="zoomLabel" style="width:44px;text-align:center;cursor:default;">100%</button>
+          <button class="dph-btn" onclick="S.zoomLevel=Math.min(1.8,S.zoomLevel+0.15);applyZoom()">+</button>
+        </div>
+      </div>
+      <div class="design-scroll"><div id="brochureWrap" style="transform-origin:top left;transition:transform .2s;">${buildBrochureHTML()}</div></div>
+    </div>
+    <div class="right-panel" style="display:flex;flex-direction:column;">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--line);background:#F9F8F6;flex-shrink:0;">
+        <h2 style="font-size:14px;font-weight:800;">Verify Draft 2 Changes</h2>
+        <p style="font-size:11px;color:var(--ink-soft);margin-top:4px;">Art has incorporated your Change Requests. Verify each item.</p>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:14px;">
+        ${crItems.map(m=>`<div class="approval-row" id="appr-row-${m.id}" onclick="selectMismatch(${m.id})" style="cursor:pointer;">
+          <div class="appr-thumb" style="background:${EMOJI_BG[m.id%EMOJI_BG.length]}">${m.emoji}</div>
+          <div style="flex:1;"><div class="appr-name">${esc(m.en)}</div>
+          <div class="appr-prev-cr">${m.cr.type?esc(m.cr.type):''} ${m.cr.customNote?`— "${esc(m.cr.customNote)}"`:''}</div></div>
+          ${isBuyer?`<div class="appr-action" onclick="event.stopPropagation()">
+            <button class="appr-btn ok ${m.buyerApproved===true?'active':''}" onclick="setBuyerApproval(${m.id},true)">✓</button>
+            <button class="appr-btn reject ${m.buyerApproved===false?'active':''}" onclick="setBuyerApproval(${m.id},false)">✗</button>
+          </div>`:`<span class="rstatus ${m.buyerApproved===true?'approved':m.buyerApproved===false?'incomplete':''}">${m.buyerApproved===true?'✓ Approved':m.buyerApproved===false?'⚑ Flagged':'Pending'}</span>`}
+        </div>`).join('')}
+      </div>
+      <div style="padding:12px 14px;border-top:1px solid var(--line);background:#FAFAF8;flex-shrink:0;">
+        ${isBuyer&&crItems.length>0?`
+        <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-teal" style="flex:1;" onclick="completeDraft2Review()">
+            ${rejectedCount>0?'⚠️ Proceed (Remake Required)':'✅ Complete Review & Proceed'}
+          </button>
+        </div>
+        ${rejectedCount>0?`<div style="font-size:11px;color:var(--red);margin-top:8px;text-align:center;font-weight:700;">⚠ ${rejectedCount} item(s) flagged — Art will need to remake those.</div>`
+        :approvedCount<crItems.length?`<div style="font-size:11px;color:var(--slate);margin-top:8px;text-align:center;">You can proceed now, or continue reviewing remaining items.</div>`:''}`
+        :(!isBuyer?`<div style="font-size:11.5px;color:var(--slate);text-align:center;">Switch to 🛒 Buyer role to approve.</div>`:'')}
+      </div>
+    </div>
+  </div>`;
+  applyZoom();
+  if(isBuyer&&!S.draft2ReviewDone){
+    setBanner(rejectedCount>0?'warn':'info',rejectedCount>0?`⚠ ${rejectedCount} item(s) flagged — you can proceed and Art will remake those.`:'🛒 Buyer: Check the layout on the left, mark each CR item as Approved (✓) or Flag (✗). You can proceed anytime.');
+    setFooter(`<span class="footer-stats"><b>${approvedCount}</b> approved · <b style="color:var(--red)">${rejectedCount}</b> flagged · ${crItems.length-(approvedCount+rejectedCount)} not yet reviewed</span><span class="spacer"></span><button class="btn-teal" onclick="completeDraft2Review()">${rejectedCount>0?'⚠️ Proceed (Remake Required)':'✅ Proceed to Final Pipeline'}</button>`);
+  }
+  else if(S.draft2ReviewDone&&rejectedCount>0){setBanner('warn',`⚠ ${rejectedCount} item(s) need remake. Art will action and re-upload.`);setFooter(`<span class="spacer"></span><button class="btn-primary" onclick="goStep(6)">View Final Pipeline →</button>`);}
+  else if(S.draft2ReviewDone){setBanner('success','✅ Draft 2 review complete. Ready for Final Pipeline.');setFooter(`<span class="spacer"></span><button class="btn-primary" onclick="goStep(6)">View Final Pipeline →</button>`);}
+  else{setBanner('info','ℹ Waiting for Buyer to review Draft 2.');setFooter(`<span class="footer-stats">Awaiting Buyer review</span>`);}
+}
+
+function setBuyerApproval(id,val){const m=mismatches.find(x=>x.id===id);if(m)m.buyerApproved=val;renderStep5();}
+function completeDraft2Review(){
+  const rejectedCount=mismatches.filter(m=>m.buyerApproved===false).length;
+  S.draft2ReviewDone=true;
+  S.buyerApproved=mismatches.filter(m=>m.crAdded).every(m=>m.buyerApproved===true);
+  S.needsRemake=rejectedCount>0;
+  S.step=6;render();
+}
+
+// ── STEP 6 ──
+function renderStep6(){
+  const crItems=mismatches.filter(m=>m.crAdded);
+  const rejectedItems=mismatches.filter(m=>m.buyerApproved===false);
+  document.getElementById('mainContent').innerHTML=`
+  <div class="pipeline-card"><h2>Final Production Pipeline</h2>
+    ${[
+      {done:true,title:'Buyer Reviewed All Mismatches',meta:`${acceptedCount()} accepted as-is, ${crItems.length} flagged with Change Requests.`},
+      {done:true,title:'Buyer Submitted Change Requests',meta:`${crItems.length} CR(s) submitted including ${manualCRCount()} manual.`},
+      {done:true,title:'Art Uploaded Draft 2',meta:'All Buyer CRs incorporated. Draft 2 uploaded.'},
+      {done:true,title:'Buyer Reviewed Draft 2',meta:S.needsRemake?`${rejectedItems.length} item(s) flagged for remake, ${mismatches.filter(m=>m.buyerApproved===true).length} approved.`:'All CR items verified.'},
+    ].map((p,i)=>`<div class="pipe-item">
+      <div class="pipe-left"><div class="pipe-num done">✓</div><div class="pipe-line"></div></div>
+      <div class="pipe-content"><div class="ptitle">${p.title}</div><div class="pmeta">${p.meta}</div><span class="pstatus done">Completed</span></div>
+    </div>`).join('')}
+    ${S.needsRemake?`
+    <div class="pipe-item">
+      <div class="pipe-left"><div class="pipe-num ${S.remakeDone?'done':'active'}">${S.remakeDone?'✓':'5'}</div><div class="pipe-line"></div></div>
+      <div class="pipe-content"><div class="ptitle">Art Remakes Flagged Items (${rejectedItems.length})</div>
+        <div class="pmeta">${rejectedItems.map(m=>m.emoji+' '+m.en).join(', ')}</div>
+        <span class="pstatus ${S.remakeDone?'done':'active'}">${S.remakeDone?'Completed':'In Progress'}</span>
+        ${!S.remakeDone&&S.role==='art'?`<div style="margin-top:9px;"><button class="btn-primary" onclick="S.remakeDone=true;renderStep6()">Mark Remakes Done</button></div>`:''}
+      </div>
+    </div>`:''}
+    <div class="pipe-item">
+      <div class="pipe-left"><div class="pipe-num ${S.artFinalDone?'done':(S.needsRemake?S.remakeDone:true)?'active':'pending'}">${S.artFinalDone?'✓':S.needsRemake?'6':'5'}</div><div class="pipe-line"></div></div>
+      <div class="pipe-content"><div class="ptitle">Art Team Completes Final Brochure</div><div class="pmeta">Art finalizes all artwork and produces the completed design file.</div>
+        <span class="pstatus ${S.artFinalDone?'done':'active'}">${S.artFinalDone?'Completed':'In Progress'}</span>
+        ${!S.artFinalDone&&S.role==='art'&&(!S.needsRemake||S.remakeDone)?`<div style="margin-top:9px;"><button class="btn-primary" onclick="S.artFinalDone=true;renderStep6()">Mark Final Design Done</button></div>`:''}
+        ${S.artFinalDone?`<div style="margin-top:10px;background:var(--green-soft);color:var(--green);font-weight:700;font-size:13px;padding:11px 14px;border-radius:9px;">🎉 WW 2625/26 brochure is ready for production!</div>`:''}
+      </div>
+    </div>
+  </div>`;
+  setBanner(S.artFinalDone?'success':'info',S.artFinalDone?'🎉 Pipeline complete! WW 2625/26 is ready for production.':'ℹ Track the final stages here.');
+  setFooter(`<span class="footer-stats">${S.artFinalDone?'✅ Complete':'In progress'} · WW 2625/26 · Tops Fine Food</span>`);
+}
+
+function setBanner(type,html){const b=document.getElementById('mainBanner');b.className='banner '+type;b.innerHTML=html;}
+function setFooter(html){document.getElementById('footerBar').innerHTML=html;}
+
+function render(){
+  renderStepper();
+  document.querySelectorAll('#roleSeg button').forEach(b=>b.classList.toggle('active',b.dataset.role===S.role));
+  if(S.step===1)renderStep1();
+  else if(S.step===2)renderStep2();
+  else if(S.step===3)renderStep3();
+  else if(S.step===4)renderStep4();
+  else if(S.step===5)renderStep5();
+  else if(S.step===6)renderStep6();
+}
+
+document.getElementById('roleSeg').addEventListener('click',e=>{
+  const btn=e.target.closest('button');if(!btn)return;
+  S.role=btn.dataset.role;render();
+});
+
+render();
+</script>
+</body>
+</html>
